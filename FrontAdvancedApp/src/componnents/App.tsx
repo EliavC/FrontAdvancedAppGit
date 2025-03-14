@@ -1,4 +1,4 @@
-import PostsList from "./PostsList"
+
 import RegistrationForm from "./RegistrationForm"
 
 
