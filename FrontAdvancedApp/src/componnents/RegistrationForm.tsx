@@ -4,6 +4,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faImage } from '@fortawesome/free-solid-svg-icons'
 import { useForm } from 'react-hook-form'
 import userService, { User } from '../services/user_service'
+import { useNavigate } from "react-router-dom"
+
 
 interface FormData {
     email: string
@@ -16,6 +18,7 @@ const RegistrationForm: FC = () => {
     const { register, handleSubmit, watch } = useForm<FormData>()
     const [img] = watch(["img"])
     const inputFileRef: { current: HTMLInputElement | null } = { current: null }
+    const navigate = useNavigate()
 
     const onSubmit = (data: FormData) => {
         console.log(data)
@@ -31,6 +34,9 @@ const RegistrationForm: FC = () => {
             const { request } = userService.register(user)
             request.then((response) => {
                 console.log(response.data)
+                if(response.status === 200){
+                    navigate("/login")
+                }
             }).catch((error) => {
                 console.error(error)
             })
@@ -80,6 +86,20 @@ const RegistrationForm: FC = () => {
                     <label>password:</label>
                     <input {...register("password")} type="password" className='form-control' />
                     <button type="submit" className="btn btn-outline-primary mt-3" >Register</button>
+                    <button
+                        style={{
+                        marginTop: "10px",
+                        backgroundColor: "blue",
+                        color: "white",
+                        padding: "10px",
+                        border: "none",
+                        cursor: "pointer",
+                        }}
+                        onClick={() => navigate("/login")}
+                        type="button" // Prevents accidental form submission
+                    >
+                        Go to Login
+                    </button>
                 </div>
             </div>
         </form>

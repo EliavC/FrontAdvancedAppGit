@@ -4,6 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { useState } from "react";
 import userService from '../services/user_service'
+import { useNavigate } from "react-router-dom";
+
 
 const schema = z.object({
     email:z.string().email("Invalid email format"),
@@ -19,7 +21,7 @@ interface User{
 
 const LogInForm : React.FC = () =>{
     const [errorMessage,setErrorMessage] = useState<string | null>(null)
-
+    const navigate = useNavigate();
     const{
         register,
         handleSubmit,
@@ -38,10 +40,12 @@ const LogInForm : React.FC = () =>{
             const {request} = userService.logIn(user)
             request.then((response) =>{
                 console.log(response.status)
+                console.log(response.data)
             })
         }catch(error){
             console.log(error)
         }
+    
     }
 
 
@@ -57,8 +61,14 @@ const LogInForm : React.FC = () =>{
     
             <input {...register("password")} type="password" placeholder="Password" />
             {errors.password && <p style={{ color: "red" }}>{errors.password.message}</p>}
-    
+
             <button type="submit">Login</button>
+
+            <button
+        style={{ marginTop: "10px", backgroundColor: "blue", color: "white", padding: "10px", border: "none", cursor: "pointer" }}
+        onClick={() => navigate("/register")}>
+        Go to Register
+      </button>
           </form>
         </div>
       );
