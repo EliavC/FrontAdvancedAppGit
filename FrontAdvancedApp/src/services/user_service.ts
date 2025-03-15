@@ -4,10 +4,12 @@ import apiClient, { CanceledError } from "./api-client";
 export { CanceledError }
 
 export interface User {
-    _id?: string,
-    email: string,
-    password: string,
-    imgUrl?: string
+    email:string,
+    password : string,
+    _id?:string,
+    refreshTokens?:string,
+    imgUrl?:string,
+    accessToken?:string
 }
 
 const register = (user: User) => {

@@ -3,7 +3,7 @@ import z from 'zod'
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { useState } from "react";
-import userService from '../services/user_service'
+import userService,{User} from '../services/user_service'
 import { useNavigate } from "react-router-dom";
 
 
@@ -13,11 +13,6 @@ const schema = z.object({
 })
 
 type FormData = z.infer<typeof schema>
-
-interface User{
-    email: string,
-    password: string
-}
 
 const LogInForm : React.FC = () =>{
     const [errorMessage,setErrorMessage] = useState<string | null>(null)
@@ -41,9 +36,12 @@ const LogInForm : React.FC = () =>{
             request.then((response) =>{
                 console.log(response.status)
                 console.log(response.data)
-                if(response.status == 200){
+                if(response.data.refreshToken && response.data.accessToken){
+                    localStorage.setItem("refreshTokens",response.data.refreshToken)
+                    localStorage.setItem("token",response.data.accessToken)
                     navigate('/home')
                 }
+                
             })
         }catch(error){
             console.log(error)
