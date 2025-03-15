@@ -34,7 +34,7 @@ const RegistrationForm: FC = () => {
             const { request } = userService.register(user)
             request.then((response) => {
                 console.log(response.data)
-                if(response.status === 200){
+                if(response.status == 200){
                     navigate("/login")
                 }
             }).catch((error) => {

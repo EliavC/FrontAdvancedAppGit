@@ -41,6 +41,9 @@ const LogInForm : React.FC = () =>{
             request.then((response) =>{
                 console.log(response.status)
                 console.log(response.data)
+                if(response.status == 200){
+                    navigate('/home')
+                }
             })
         }catch(error){
             console.log(error)
