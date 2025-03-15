@@ -18,6 +18,15 @@ const register = (user: User) => {
     return { request, abort: () => abortController.abort() }
 }
 
+const logIn = (user:User)=>{
+    const abortController = new AbortController()
+    const request = apiClient.post<User>('/auth/login',
+        user,
+        {signal:abortController.signal}
+    )
+    return{request,abort:()=>abortController.abort}
+}
+
 const uploadImage = (img: File) => {
     // const abortController = new AbortController()
     const formData = new FormData();
@@ -33,4 +42,4 @@ const uploadImage = (img: File) => {
 
 
 
-export default { register, uploadImage }
+export default { register, uploadImage ,logIn}
