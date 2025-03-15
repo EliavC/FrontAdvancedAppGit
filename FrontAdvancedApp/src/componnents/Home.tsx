@@ -1,6 +1,8 @@
 import { FC, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import user_service from "../services/user_service";
+import ItemsList from "./ItemsList";
+import PostList from "./PostsList";
 
 const Home: FC = () => {
   const navigate = useNavigate();
@@ -17,6 +19,10 @@ const Home: FC = () => {
     <div style={{ textAlign: "center", padding: "50px" }}>
       <h1>Welcome to the Home Page</h1>
       <p>You are successfully logged in.</p>
+
+      <PostList
+        
+      />
 
       <button
         onClick={() => {
