@@ -1,9 +1,18 @@
 import { FC, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import user_service from "../services/user_service";
 
 const Home: FC = () => {
   const navigate = useNavigate();
   
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+    }
+  }, [navigate]);
+
+
   return (
     <div style={{ textAlign: "center", padding: "50px" }}>
       <h1>Welcome to the Home Page</h1>
@@ -11,7 +20,8 @@ const Home: FC = () => {
 
       <button
         onClick={() => {
-          localStorage.removeItem("token");
+            localStorage.removeItem("token");
+            localStorage.removeItem("refreshToken");
           navigate("/login"); 
         }}
         style={{
