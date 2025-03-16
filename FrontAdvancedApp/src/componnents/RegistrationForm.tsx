@@ -5,6 +5,7 @@ import { faImage } from '@fortawesome/free-solid-svg-icons'
 import { useForm } from 'react-hook-form'
 import userService, { User } from '../services/user_service'
 import { useNavigate } from "react-router-dom"
+import { CredentialResponse, GoogleLogin } from '@react-oauth/google'
 
 
 interface FormData {
@@ -51,6 +52,14 @@ const RegistrationForm: FC = () => {
         }
     }, [img]);
     const { ref, ...restRegisterParams } = register("img")
+
+    const onGoogleLoginSuccess = (credentialResponse: CredentialResponse)=>{
+        console.log(credentialResponse)
+    }
+
+    const onGoogleLoginFailure = ()=>{
+        console.log("Google login failure")
+    }
     return (
         <form onSubmit={handleSubmit(onSubmit)} >
             <div style={{
@@ -100,6 +109,10 @@ const RegistrationForm: FC = () => {
                     >
                         Go to Login
                     </button>
+
+                    <GoogleLogin onSuccess={onGoogleLoginSuccess} onError={onGoogleLoginFailure}>
+
+                    </GoogleLogin>
                 </div>
             </div>
         </form>

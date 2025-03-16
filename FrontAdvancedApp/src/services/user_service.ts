@@ -1,3 +1,4 @@
+import { CredentialResponse } from "@react-oauth/google";
 import apiClient, { CanceledError } from "./api-client";
 
 
@@ -18,6 +19,17 @@ const register = (user: User) => {
         user,
         { signal: abortController.signal })
     return { request, abort: () => abortController.abort() }
+}
+
+const registerWithGoogle = (credentialResponse: CredentialResponse) => {
+  return new Promise<User>((resolve,reject)=>{
+     apiClient.post<User>('/auth/google',credentialResponse).then((response)=>{
+        resolve(response.data)
+      })
+        .catch((error)=>{
+          reject(error)
+        })
+      })
 }
 
   const logIn = async (user: User) => {
@@ -59,6 +71,7 @@ const register = (user: User) => {
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("refreshToken");
+    document.cookie = "refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"
   };
 
 const uploadImage = (img: File) => {
@@ -76,4 +89,4 @@ const uploadImage = (img: File) => {
 
 
 
-export default { register, uploadImage ,logIn,logout,refreshAccessToken}
+export default { register, uploadImage ,logIn,logout,refreshAccessToken,registerWithGoogle}

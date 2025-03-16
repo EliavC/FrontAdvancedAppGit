@@ -3,8 +3,8 @@
 import { useForm } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
-import userService, { User } from "../services/user_service";
+import { useEffect, useState } from "react";
+import userService,  { User } from "../services/user_service";
 import { useNavigate } from "react-router-dom";
 
 const schema = z.object({
@@ -16,6 +16,7 @@ type FormData = z.infer<typeof schema>;
 
 const LogInForm: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const {
@@ -26,7 +27,26 @@ const LogInForm: React.FC = () => {
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = async (data: FormData) => {
+  useEffect(() => {
+    const autoLogin = async () => {
+      try {
+        const newToken = await userService.refreshAccessToken();
+        if (newToken) {
+          setAccessToken(newToken);
+        }
+      } catch (err) {
+        console.error("Auto-login failed:", err);
+        setAccessToken(null);
+      }
+    };
+  
+    if (document.cookie.includes("refreshToken")) {
+      autoLogin();
+    }
+
+
+  }, []);
+ /* const onSubmit = async (data: FormData) => {
     try {
       setErrorMessage(null);
 
@@ -40,6 +60,28 @@ const LogInForm: React.FC = () => {
       if (response.data.refreshToken && response.data.accessToken) {
         localStorage.setItem("refreshToken", response.data.refreshToken); // ✅ Store Refresh Token
         localStorage.setItem("token", response.data.accessToken); // ✅ Store Access Token
+        navigate("/home");
+      } else {
+        setErrorMessage("Invalid response from server.");
+      }
+    } catch (error: any) {
+      console.error("Login error:", error);
+      setErrorMessage(error.response?.data?.message || "Invalid credentials.");
+    }
+  };*/
+  const onSubmit = async (data: FormData) => {
+    try {
+      setErrorMessage(null);
+
+      const user: User = {
+        email: data.email,
+        password: data.password,
+      };
+
+      const response = await userService.logIn(user); // Calls `/auth/login`
+
+      if (response.data.accessToken) {
+        setAccessToken(response.data.accessToken);
         navigate("/home");
       } else {
         setErrorMessage("Invalid response from server.");
