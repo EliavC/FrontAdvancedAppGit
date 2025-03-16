@@ -10,6 +10,8 @@ export interface Post  {
     content: string,
     owner: string,
     likes: number,
+    imgUrlPost?: string,
+
 }
 
 const PostService = new BaseService<Post>("posts");

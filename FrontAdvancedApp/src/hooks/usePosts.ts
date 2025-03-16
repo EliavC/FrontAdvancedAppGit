@@ -1,18 +1,13 @@
 import { useEffect, useState } from "react";
 import useData from "./useData";
 import PostService from "../services/post-service";
-import UserService from "../services/user_service"; // ✅ Ensure correct import
 import { Post } from "../services/post-service";
+import UserService from "../services/user_service"; // ✅ Import Post Type
 
-// ✅ Use TypeScript assertion to extend `Post` dynamically
-type PostWithImages = Post & {
-    ownerImage?: string;
-    imageUrl?: string;
-};
 
 const usePosts = () => {
     const { data: posts, isLoading, error, like } = useData<Post>(PostService);
-    const [postsWithImages, setPostsWithImages] = useState<PostWithImages[]>([]);
+    const [postsWithImages, setPostsWithImages] = useState<Post[]>([]);
 
     useEffect(() => {
         const fetchUserImages = async () => {
@@ -21,20 +16,20 @@ const usePosts = () => {
             const userIds = [...new Set(posts.map(post => post.owner))]; // ✅ Unique user IDs
             const userImages: { [key: string]: string } = {};
 
+            // Fetch user profile images for each user ID
             await Promise.all(
                 userIds.map(async (userId) => {
                     const user = await UserService.getUserById(userId);
                     if (user?.imgUrl) {
-                        userImages[userId] = user.imgUrl.replace(/\\/g, "/"); // ✅ Fix backslashes
+                        userImages[userId] = user.imgUrl;
                     }
                 })
             );
 
-            // ✅ Use TypeScript assertion to tell TypeScript that `imageUrl` exists dynamically
+            // Update posts to include `ownerImage`
             const updatedPosts = posts.map(post => ({
                 ...post,
                 ownerImage: userImages[post.owner] || "/default-profile.png",
-                imageUrl: (post as PostWithImages).imageUrl?.replace(/\\/g, "/") || "/default-post.jpg",
             }));
 
             setPostsWithImages(updatedPosts);
@@ -47,6 +42,13 @@ const usePosts = () => {
 };
 
 export default usePosts;
+
+
+
+
+
+
+
 
 
 // const usePosts = () => {

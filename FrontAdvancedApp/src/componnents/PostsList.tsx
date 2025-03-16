@@ -1,9 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import usePosts from "../hooks/usePosts";
-import PostComponent from "./Post"; // ✅ Import Post Component
+import PostComponent from "./Post";
+import { getUserById } from "../services/user_service"; // Import getUserById
 
 const PostList = () => {
-    const { data: posts, isLoading, error, like } = usePosts(); // ✅ Posts now include imageUrl
+    const { data: posts, isLoading, error, like } = usePosts();
+    const [userImgUrls, setUserImgUrls] = useState<{ [key: string]: string }>({});
+
+    useEffect(() => {
+        const fetchUserImages = async () => {
+            const userImgUrlsTemp: { [key: string]: string } = {};
+            for (const post of posts) {
+                if (post.owner) {
+                    const user = await getUserById(post.owner);
+                    if (user && user.imgUrl) {
+                        userImgUrlsTemp[post.owner] = user.imgUrl;
+                    }
+                }
+            }
+            setUserImgUrls(userImgUrlsTemp);
+        };
+
+        if (posts) {
+            fetchUserImages();
+        }
+    }, [posts]);
 
     if (isLoading) return <p>Loading posts...</p>;
     if (error) return <p style={{ color: "red" }}>Error: {error}</p>;
@@ -12,66 +33,15 @@ const PostList = () => {
     return (
         <div className="post-list">
             {posts.map((post) => (
-                <PostComponent key={post._id} post={post} likePost={like} />
+                <PostComponent 
+                    key={post._id} 
+                    post={post} 
+                    likePost={like} 
+                    userImgUrl={userImgUrls[post.owner] || "/default-profile.png"} // Pass userImgUrl
+                />
             ))}
         </div>
     );
 };
 
 export default PostList;
-
-
-// import React, { useEffect, useState } from "react";
-
-// import usePosts from "../hooks/usePosts";
-// import { Post } from "../services/post-service"; 
-
-// const PostList = () => {
-//     const { data: posts, isLoading, error, like, getLikes } = usePosts();
-//     const [likesCount, setLikesCount] = useState<{ [key: string]: number }>({});
-
-//     useEffect(() => {
-//         posts.forEach((post) => {
-//             if (!post._id) return; // ✅ Prevents undefined `_id` from being used as a key
-
-//             const postId = post._id.toString(); // ✅ Ensure `_id` is a string
-
-//             getLikes(postId).then((count: number) => {
-//                 console.log(`Likes for post ${postId}:`, count); // ✅ Debugging output
-//                 setLikesCount(prev => ({
-//                     ...prev,
-//                     [postId]: typeof count === "number" ? count : 0 // ✅ Ensure it's a number
-//                 }));
-//             }).catch((err: unknown) => {
-//                 console.error(`Error fetching likes for post ${postId}:`, err);
-//             });
-//         });
-//     }, [posts]);
-
-//     if (isLoading) return <p>Loading posts...</p>;
-//     if (error) return <p style={{ color: "red" }}>Error: {error}</p>;
-//     if (!posts || posts.length === 0) return <p>No posts available.</p>;
-
-//     return (
-//         <div>
-//             <h2>Posts</h2>
-//             <ul>
-//                 {posts.map((post) => {
-//                     if (!post._id) return null; // ✅ Skip rendering posts with missing `_id`
-
-//                     const postId = post._id.toString(); // ✅ Ensure `_id` is a string
-//                     const likes = likesCount[postId] ?? post.likes; // ✅ Ensure it's a number
-
-//                     return (
-//                         <li key={postId}>
-//                             {post.title || "Untitled Post"} - Likes: {typeof likes === "number" ? likes : 0}
-//                             <button onClick={() => like(postId)} disabled={!post._id}>👍 Like</button> 
-//                         </li>
-//                     );
-//                 })}
-//             </ul>
-//         </div>
-//     );
-// };
-
-// export default PostList;

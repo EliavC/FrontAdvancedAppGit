@@ -1,23 +1,19 @@
 import React from "react";
 import { Post } from "../services/post-service";
 
-interface ExtendedPost extends Post {
-    ownerImage?: string;
-    imageUrl?: string;
-}
-
-interface PostProps {
-    post: ExtendedPost;
+interface PostItemProps {
+    post: Post;
     likePost: (id: string) => void;
+    userImgUrl: string; // Add userImgUrl prop
 }
 
-const PostItem: React.FC<PostProps> = ({ post, likePost }) => {
+const PostComponent: React.FC<PostItemProps> = ({ post, likePost, userImgUrl }) => {
     return (
         <div className="post">
             {/* Top: Profile Image & Username */}
             <div className="post-header">
                 <img 
-                    src={post.ownerImage ? `http://localhost:3000/storage/${post.ownerImage}` : "/default-profile.png"} 
+                    src={userImgUrl ? `http://localhost:3000/storage/${userImgUrl}` : "/default-profile.png"} 
                     alt="Profile" 
                     className="profile-img"
                 />
@@ -26,7 +22,7 @@ const PostItem: React.FC<PostProps> = ({ post, likePost }) => {
             </div>
 
             {/* Post Image */}
-            <img src={post.imageUrl} alt="Post" className="post-image" />
+            <img src={post.imgUrlPost} alt="Post" className="post-image" />
 
             {/* Buttons */}
             <div className="post-actions">
@@ -42,4 +38,4 @@ const PostItem: React.FC<PostProps> = ({ post, likePost }) => {
     );
 };
 
-export default PostItem;
+export default PostComponent;
