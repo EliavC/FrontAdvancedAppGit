@@ -12,6 +12,17 @@ export interface User {
     accessToken?: string;
   }
 
+  export const getUserById = async (userId: string) => {
+    try {
+        const response = await apiClient.get(`/users/${userId}`);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching user data:", error);
+        return null;
+    }
+};
+
+
 const register = (user: User) => {
     const abortController = new AbortController()
     const request = apiClient.post<User>('/auth/register',
@@ -76,4 +87,4 @@ const uploadImage = (img: File) => {
 
 
 
-export default { register, uploadImage ,logIn,logout,refreshAccessToken}
+export default { register, uploadImage ,logIn,logout,refreshAccessToken,getUserById}
