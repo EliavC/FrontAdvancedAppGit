@@ -15,8 +15,17 @@ export interface User {
 
   export const getUserById = async (userId: string) => {
     try {
-        const response = await apiClient.get(`/users/${userId}`);
-        return response.data;
+        const response = await apiClient.get(`/auth/users/${userId}`);
+        return response.data.user;
+    } catch (error) {
+        console.error("Error fetching user data:", error);
+        return null;
+    }
+};
+export const getUserImgById = async (userId: string) => {
+    try {
+        const response = await apiClient.get(`/auth/users/${userId}`);
+        return response.data.imgUrl;
     } catch (error) {
         console.error("Error fetching user data:", error);
         return null;
@@ -101,4 +110,4 @@ const uploadImage = (img: File) => {
 
 
 
-export default { register, uploadImage ,logIn,logout,refreshAccessToken,registerWithGoogle}
+export default { register, uploadImage ,logIn,logout,refreshAccessToken,registerWithGoogle,getUserById,getUserImgById};

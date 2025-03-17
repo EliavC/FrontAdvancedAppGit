@@ -16,15 +16,15 @@ const usePosts = () => {
             const userIds = [...new Set(posts.map(post => post.owner))]; // ✅ Unique user IDs
             const userImages: { [key: string]: string } = {};
 
-            // Fetch user profile images for each user ID
-            await Promise.all(
-                userIds.map(async (userId) => {
-                    const user = await UserService.getUserById(userId);
-                    if (user?.imgUrl) {
-                        userImages[userId] = user.imgUrl;
-                    }
-                })
-            );
+            // // Fetch user profile images for each user ID
+            // await Promise.all(
+            //     userIds.map(async (userId) => {
+            //         const user = await UserService.getUserById(userId);////////////////////////////////////
+            //         if (user?.imgUrl) {
+            //             userImages[userId] = user.imgUrl;
+            //         }
+            //     })
+            // );
 
             // Update posts to include `ownerImage`
             const updatedPosts = posts.map(post => ({

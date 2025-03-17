@@ -1,19 +1,34 @@
 import React from "react";
 import { Post } from "../services/post-service";
+import {getUserImgById } from "../services/user_service";
+
 
 interface PostItemProps {
     post: Post;
     likePost: (id: string) => void;
-    userImgUrl: string; // Add userImgUrl prop
+   
 }
 
-const PostComponent: React.FC<PostItemProps> = ({ post, likePost, userImgUrl }) => {
+
+const PostComponent: React.FC<PostItemProps> = ({ post, likePost}) => {
+    const [userImg, setUserImg] = React.useState<string | null>(null);
+
+    React.useEffect(() => {
+        const fetchUserImg = async () => {
+            const img = await getUserImgById(post.owner);
+            setUserImg(img);
+        };
+        fetchUserImg();
+    }, [post.owner]);
+
     return (
+      
         <div className="post">
             {/* Top: Profile Image & Username */}
             <div className="post-header">
                 <img 
-                    src={userImgUrl ? `http://localhost:3000/storage/${userImgUrl}` : "/default-profile.png"} 
+                    src={userImg ?? "avatar.png"} 
+                    
                     alt="Profile" 
                     className="profile-img"
                 />
