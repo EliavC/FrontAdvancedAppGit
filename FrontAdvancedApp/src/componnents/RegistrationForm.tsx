@@ -6,7 +6,6 @@ import { useForm } from 'react-hook-form'
 import userService, { User } from '../services/user_service'
 import { useNavigate } from "react-router-dom"
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google'
-import apiClient from '../services/api-client'
 
 
 interface FormData {
@@ -22,19 +21,12 @@ const RegistrationForm: FC = () => {
     const [img] = watch(["img"])
     const inputFileRef: { current: HTMLInputElement | null } = { current: null }
     const navigate = useNavigate()
-    const [usernameError, setUsernameError] = useState<string>(""); 
 
     const onSubmit = (data: FormData) => {
         console.log(data)
         const { request } = userService.uploadImage(data.img[0])
         request.then((response) => {
             console.log(response.data)
-            const existingUsername = userService.getUserByUsername(data.username)
-            if(existingUsername != null)
-            {
-                setUsernameError("⚠️ Username already taken! Please choose another.");
-                return;
-            }
             const user: User = {
                 username:data.username,
                 email: data.email,
@@ -125,7 +117,6 @@ const RegistrationForm: FC = () => {
                     <input {...register("password")} type="password" className='form-control' />
                     <label>username:</label>
                     <input {...register("username")} type="text" className='form-control' />
-                    {usernameError && <p style={{ color: "red", fontSize: "14px" }}>{usernameError}</p>} 
 
                     <button type="submit" className="btn btn-outline-primary mt-3" >Register</button>
                     <button
