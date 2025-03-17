@@ -18,6 +18,7 @@ const PostList = () => {
                     post={post} 
                     likePost={like} 
                     userImgUrl={post.ownerImage || "/default-profile.png"} // ✅ Now using `ownerImage`
+                    userName={post.owner || "Anonymous"} // ✅ Now using `owner`
                 />
             ))}
         </div>

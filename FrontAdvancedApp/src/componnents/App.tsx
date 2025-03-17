@@ -5,8 +5,7 @@ import RegistrationForm from "./RegistrationForm"
 import { BrowserRouter as Router, Route, Routes ,Navigate} from "react-router-dom";
 import LogInForm from "./LogInForm"
 import Home from "./Home"
-import Post from "./Post";
-import PostList from "./PostsList";
+
 
 function App() {
   return (

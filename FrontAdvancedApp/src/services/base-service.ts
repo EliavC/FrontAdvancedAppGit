@@ -40,6 +40,16 @@ class BaseService<T> {
     like = (id: string) => this.request(apiClient.patch<T>(`/${this.endpoint}/${id}/like`));
     getLikes = (id: string) => this.request(apiClient.get<number>(`/${this.endpoint}/${id}/likes`));
 
+    getUserNameById = async (userId: string) => {
+        try {
+            const response = await apiClient.get(`/auth/users/${userId}`);
+            return response.data.username;
+        } catch (error) {
+            console.error("Error fetching user data:", error);
+            return null;    
+        }    
+};
+
     abort = () => {
         if (this.abortController) {
             this.abortController.abort();

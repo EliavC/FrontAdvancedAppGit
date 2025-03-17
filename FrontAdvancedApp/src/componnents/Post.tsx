@@ -5,6 +5,7 @@ interface PostItemProps {
     post: Post;
     likePost: (id: string) => void;
     userImgUrl: string;
+    userName: string;
 }
 
 const PostComponent: React.FC<PostItemProps> = ({ post, likePost, userImgUrl }) => {
@@ -25,7 +26,7 @@ const PostComponent: React.FC<PostItemProps> = ({ post, likePost, userImgUrl }) 
             <div className="post-actions">
                 <button onClick={() => likePost(post._id ?? "")} className="action-btn">❤️</button>
                 <button className="action-btn">💬</button>
-                <button className="action-btn">📤</button>
+               
             </div>
 
             <p className="likes">{post.likes ?? 0} likes</p>
