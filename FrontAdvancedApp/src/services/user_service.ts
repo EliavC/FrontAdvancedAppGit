@@ -13,6 +13,21 @@ export interface User {
     imgUrl?: string;
     accessToken?: string;
   }
+   const getUserByUsername = async (username: string) => {
+    try {
+        const response = await apiClient.post(`/auth/users/`,{
+          username:username
+        });
+        if(response.data == -999)
+        {
+          return null;
+        }
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching user data:", error);
+        return null;
+    }
+};
 
   export const getUserById = async (userId: string) => {
     try {
@@ -111,4 +126,4 @@ const uploadImage = (img: File) => {
 
 
 
-export default { register, uploadImage ,logIn,logout,refreshAccessToken,registerWithGoogle,getUserById,getUserImgById};
+export default { getUserByUsername, register, uploadImage ,logIn,logout,refreshAccessToken,registerWithGoogle,getUserById,getUserImgById};
