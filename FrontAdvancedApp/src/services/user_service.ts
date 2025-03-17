@@ -32,16 +32,17 @@ const register = (user: User) => {
     return { request, abort: () => abortController.abort() }
 }
 
-const registerWithGoogle = (credentialResponse: CredentialResponse) => {
-  return new Promise<User>((resolve,reject)=>{
-     apiClient.post<User>('/auth/google',credentialResponse).then((response)=>{
-        resolve(response.data)
-      })
-        .catch((error)=>{
-          reject(error)
-        })
-      })
-}
+ const registerWithGoogle = async (credentialResponse: CredentialResponse) => {
+    try {
+      console.log('2')
+      const response = await apiClient.post("/auth/google", { credential: credentialResponse.credential });
+      console.log('after axios')
+      return response.data; 
+    } catch (error) {
+      console.error("Google OAuth Error:", error);
+      throw error; 
+    }
+};
 
   const logIn = async (user: User) => {
     try {

@@ -53,8 +53,18 @@ const RegistrationForm: FC = () => {
     }, [img]);
     const { ref, ...restRegisterParams } = register("img")
 
-    const onGoogleLoginSuccess = (credentialResponse: CredentialResponse)=>{
-        console.log(credentialResponse)
+    const onGoogleLoginSuccess = async (credentialResponse: CredentialResponse)=>{
+        try{
+            console.log('1')
+            const data = await userService.registerWithGoogle(credentialResponse)
+            console.log('5')
+            localStorage.setItem("token",data.accessToken)
+            localStorage.setItem("refreshToken",data.refreshToken)
+            navigate('/home')
+        }
+        catch(err){
+            console.log('login error',err);
+        }
     }
 
     const onGoogleLoginFailure = ()=>{
@@ -111,7 +121,6 @@ const RegistrationForm: FC = () => {
                     </button>
 
                     <GoogleLogin onSuccess={onGoogleLoginSuccess} onError={onGoogleLoginFailure}>
-
                     </GoogleLogin>
                 </div>
             </div>
