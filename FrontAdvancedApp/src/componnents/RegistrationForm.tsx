@@ -58,9 +58,16 @@ const RegistrationForm: FC = () => {
             console.log('1')
             const data = await userService.registerWithGoogle(credentialResponse)
             console.log('5')
-            localStorage.setItem("token",data.accessToken)
-            localStorage.setItem("refreshToken",data.refreshToken)
-            navigate('/home')
+            if(data.flag == -999){
+                alert("Ur already registered")
+                navigate('/login')
+            }
+            else{
+                localStorage.setItem("token",data.accessToken)
+                localStorage.setItem("refreshToken",data.refreshToken)
+                navigate('/home')
+            }
+            
         }
         catch(err){
             console.log('login error',err);
