@@ -1,43 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import usePosts from "../hooks/usePosts";
 import PostComponent from "./Post";
-import { getUserById } from "../services/user_service"; // Import getUserById
+import "./styles.css"; 
 
 const PostList = () => {
-    const { data: posts, isLoading, error, like } = usePosts();
-    const [userImgUrls, setUserImgUrls] = useState<{ [key: string]: string }>({});
-
-    useEffect(() => {
-        const fetchUserImages = async () => {
-            const userImgUrlsTemp: { [key: string]: string } = {};
-            for (const post of posts) {
-                if (post.owner) {
-                    const user = await getUserById(post.owner);
-                    if (user && user.imgUrl) {
-                        userImgUrlsTemp[post.owner] = user.imgUrl;
-                    }
-                }
-            }
-            setUserImgUrls(userImgUrlsTemp);
-        };
-
-        if (posts) {
-            fetchUserImages();
-        }
-    }, [posts]);
+    const { data: posts, isLoading, error, like } = usePosts(); // ✅ Now posts include `ownerImage`
 
     if (isLoading) return <p>Loading posts...</p>;
     if (error) return <p style={{ color: "red" }}>Error: {error}</p>;
     if (!posts || posts.length === 0) return <p>No posts available.</p>;
 
     return (
-        <div className="post-list">
+        <div className="post-list"> 
             {posts.map((post) => (
                 <PostComponent 
                     key={post._id} 
                     post={post} 
                     likePost={like} 
-                    userImgUrl={userImgUrls[post.owner] || "/default-profile.png"} // Pass userImgUrl
+                    userImgUrl={post.ownerImage || "/default-profile.png"} // ✅ Now using `ownerImage`
                 />
             ))}
         </div>

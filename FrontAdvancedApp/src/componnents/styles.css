@@ -1,0 +1,86 @@
+/* Centered Instagram-Style Post List */
+.post-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center the posts */
+    gap: 30px;
+    padding: 20px;
+}
+
+/* Instagram Post Card */
+.post-card {
+    width: 500px; /* Standard Instagram post width */
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Post Header - Profile Image & Username */
+.post-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+}
+
+.profile-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.username {
+    font-weight: bold;
+    flex-grow: 1; /* Pushes username to the left */
+}
+
+.more-options {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+/* Post Image - Takes Up Full Width */
+.post-image {
+    width: 100%;
+    border-radius: 5px;
+    object-fit: cover;
+}
+
+/* Post Actions - Like, Comment, Share */
+.post-actions {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.action-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+/* Likes & Caption */
+.likes {
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.caption {
+    margin-left: 10px;
+    font-size: 14px;
+}
+
+/* Mobile Responsive */
+@media (max-width: 600px) {
+    .post-card {
+        width: 90%; /* Make it responsive on smaller screens */
+    }
+}
