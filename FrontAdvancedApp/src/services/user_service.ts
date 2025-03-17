@@ -1,6 +1,6 @@
 import { CredentialResponse } from "@react-oauth/google";
 import apiClient, { CanceledError } from "./api-client";
-import axios from "axios";
+
 
 export { CanceledError }
 
@@ -15,11 +15,11 @@ export interface User {
 
   export const getUserById = async (userId: string) => {
     try {
-        const response = await axios.get(`/users/${userId}`);
+        const response = await apiClient.get(`/users/${userId}`);
         return response.data;
     } catch (error) {
-        console.error(`Error fetching user data: ${error}`);
-        return null; // Return null if user is not found
+        console.error("Error fetching user data:", error);
+        return null;
     }
 };
 
@@ -100,4 +100,4 @@ const uploadImage = (img: File) => {
 
 
 
-export default { register,getUserById, uploadImage ,logIn,logout,refreshAccessToken,registerWithGoogle}
+export default { register, uploadImage ,logIn,logout,refreshAccessToken,registerWithGoogle}
