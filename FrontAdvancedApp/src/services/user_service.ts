@@ -32,15 +32,15 @@ export const getUserImgById = async (userId: string) => {
         return null;
     }
 };
-//     export const getUserNameById = async (userId: string) => {
-//         try {
-//             const response = await apiClient.get(`/auth/users/${userId}`);
-//             return response.data.username;
-//         } catch (error) {
-//             console.error("Error fetching user data:", error);
-//             return null;    
-//         }    
-// };
+    export const getUserNameById = async (userId: string) => {
+        try {
+            const response = await apiClient.get(`/auth/users/${userId}`);
+            return response.data.username;
+        } catch (error) {
+            console.error("Error fetching user data:", error);
+            return null;    
+        }    
+};
 
 
 const register = (user: User) => {
