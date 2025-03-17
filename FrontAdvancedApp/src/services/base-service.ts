@@ -35,8 +35,7 @@ class BaseService<T> {
     getAll = () => this.request(apiClient.get<T[]>(`/${this.endpoint}`));
     getById = (id: string) => this.request(apiClient.get<T>(`/${this.endpoint}/${id}`));
     create = (data: T) => this.request(apiClient.post<T>(`/${this.endpoint}`, data));
-    update = (id: string, data: Partial<T>) =>
-        this.request(apiClient.put<T>(`/${this.endpoint}/${id}`, data));
+    update = (id: string, data: Partial<T>) =>this.request(apiClient.put<T>(`/${this.endpoint}/${id}`, data));
     delete = (id: string) => this.request(apiClient.delete(`/${this.endpoint}/${id}`));
     like = (id: string) => this.request(apiClient.patch<T>(`/${this.endpoint}/${id}/like`));
     getLikes = (id: string) => this.request(apiClient.get<number>(`/${this.endpoint}/${id}/likes`));
