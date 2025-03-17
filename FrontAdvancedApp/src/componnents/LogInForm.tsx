@@ -6,8 +6,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import userService,  { User } from "../services/user_service";
 import { useNavigate } from "react-router-dom";
+import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 
 const schema = z.object({
+  username: z.string(),
   email: z.string().email("Invalid email format"),
   password: z.string().min(1, "Password is required"),
 });
@@ -46,34 +48,13 @@ const LogInForm: React.FC = () => {
 
 
   }, []);
- /* const onSubmit = async (data: FormData) => {
-    try {
-      setErrorMessage(null);
 
-      const user: User = {
-        email: data.email,
-        password: data.password,
-      };
-
-      const response = await userService.logIn(user);
-
-      if (response.data.refreshToken && response.data.accessToken) {
-        localStorage.setItem("refreshToken", response.data.refreshToken); // ✅ Store Refresh Token
-        localStorage.setItem("token", response.data.accessToken); // ✅ Store Access Token
-        navigate("/home");
-      } else {
-        setErrorMessage("Invalid response from server.");
-      }
-    } catch (error: any) {
-      console.error("Login error:", error);
-      setErrorMessage(error.response?.data?.message || "Invalid credentials.");
-    }
-  };*/
   const onSubmit = async (data: FormData) => {
     try {
       setErrorMessage(null);
 
       const user: User = {
+        username:data.username,
         email: data.email,
         password: data.password,
       };
@@ -92,6 +73,24 @@ const LogInForm: React.FC = () => {
     }
   };
 
+  const loginSuccess = async(credentialResponse: CredentialResponse)=>{
+    try{
+      const data = await userService.registerWithGoogle(credentialResponse)
+      if(data.flag == -999){
+        localStorage.setItem("token",data.accessToken)
+        localStorage.setItem("refreshToken",data.refreshToken)
+        navigate('/home')
+      }
+    }catch(err)
+    {
+      console.log('login error',err);
+    }
+  }
+
+  const loginFailed = async()=>{
+    console.log("Google login failure")
+  }
+
   return (
     <div style={{ maxWidth: "400px", margin: "auto", textAlign: "center" }}>
       <h2>Login</h2>
@@ -101,7 +100,8 @@ const LogInForm: React.FC = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <input {...register("email")} type="email" placeholder="Email" />
         {errors.email && <p style={{ color: "red" }}>{errors.email.message}</p>}
-
+        <input {...register("username")} type="text" placeholder="Username" />
+        {errors.email && <p style={{ color: "red" }}>{errors.email.message}</p>}
         <input {...register("password")} type="password" placeholder="Password" />
         {errors.password && <p style={{ color: "red" }}>{errors.password.message}</p>}
 
@@ -114,6 +114,8 @@ const LogInForm: React.FC = () => {
         >
           Go to Register
         </button>
+        <GoogleLogin onSuccess={loginSuccess} onError={loginFailed}>
+                    </GoogleLogin>
       </form>
     </div>
   );

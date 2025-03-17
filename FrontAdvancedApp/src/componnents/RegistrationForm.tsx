@@ -9,6 +9,7 @@ import { CredentialResponse, GoogleLogin } from '@react-oauth/google'
 
 
 interface FormData {
+    username:string,
     email: string
     password: string
     img: File[]
@@ -27,6 +28,7 @@ const RegistrationForm: FC = () => {
         request.then((response) => {
             console.log(response.data)
             const user: User = {
+                username:data.username,
                 email: data.email,
                 password: data.password,
                 imgUrl: response.data.url
@@ -53,7 +55,7 @@ const RegistrationForm: FC = () => {
     }, [img]);
     const { ref, ...restRegisterParams } = register("img")
 
-    const onGoogleLoginSuccess = async (credentialResponse: CredentialResponse)=>{
+    const onGoogleRegisterSuccess = async (credentialResponse: CredentialResponse)=>{
         try{
             console.log('1')
             const data = await userService.registerWithGoogle(credentialResponse)
@@ -74,9 +76,11 @@ const RegistrationForm: FC = () => {
         }
     }
 
-    const onGoogleLoginFailure = ()=>{
+    const onGoogleFailure = ()=>{
         console.log("Google login failure")
     }
+
+
     return (
         <form onSubmit={handleSubmit(onSubmit)} >
             <div style={{
@@ -111,6 +115,9 @@ const RegistrationForm: FC = () => {
                     <input {...register("email")} type="text" className='form-control' />
                     <label>password:</label>
                     <input {...register("password")} type="password" className='form-control' />
+                    <label>username:</label>
+                    <input {...register("username")} type="text" className='form-control' />
+
                     <button type="submit" className="btn btn-outline-primary mt-3" >Register</button>
                     <button
                         style={{
@@ -127,7 +134,7 @@ const RegistrationForm: FC = () => {
                         Go to Login
                     </button>
 
-                    <GoogleLogin onSuccess={onGoogleLoginSuccess} onError={onGoogleLoginFailure}>
+                    <GoogleLogin onSuccess={onGoogleRegisterSuccess} onError={onGoogleFailure}>
                     </GoogleLogin>
                 </div>
             </div>
