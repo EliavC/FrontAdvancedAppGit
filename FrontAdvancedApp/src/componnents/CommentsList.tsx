@@ -1,4 +1,4 @@
-import CommentComponent from "./comment";
+import CommentComponent from "./Comment";
 import "./styles.css"; 
 import useComments from "../hooks/useComments";
 
