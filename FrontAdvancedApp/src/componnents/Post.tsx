@@ -5,7 +5,7 @@ import { Post } from "../services/post-service";
 interface PostItemProps {
     post: Post;
     likePost: (id: string) => void;
-    addComment: (postId: string, comment: string) => void; // ✅ Ensure `addComment` is declared
+    addComment: (postId: string, comment: string) => void;
     userImgUrl: string;
     userName: string;
     commentCount: number;
@@ -19,7 +19,9 @@ const PostComponent: React.FC<PostItemProps> = ({ post, likePost, addComment, us
         if (newComment.trim() !== "") {
             addComment(post._id ?? "", newComment);
             setNewComment("");
-            navigate(`/comments/${post._id}`); // ✅ Redirect after adding comment
+
+            // ✅ Redirect to the correct comments page after adding a comment
+            navigate(`/comments/${post._id}`);
         }
     };
 
@@ -42,13 +44,11 @@ const PostComponent: React.FC<PostItemProps> = ({ post, likePost, addComment, us
                 <span className="count">{post.likes ?? 0}</span>
             </div>
 
-            {/* ✅ Display the number of comments */}
             <div className="action-item">
                 <button className="action-btn">💬</button>
-                <span className="count">{commentCount ?? 0} comments</span>
+                <span className="count">{commentCount} comments</span>
             </div>
 
-            {/* ✅ Add comment section */}
             <div className="add-comment">
                 <input
                     type="text"

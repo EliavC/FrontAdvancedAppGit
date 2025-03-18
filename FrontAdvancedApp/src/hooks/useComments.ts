@@ -4,14 +4,9 @@ import { Comment } from "../services/comment-service";
 import { getUserImgById, getUserNameById } from "../services/user_service";
 import CommentService from "../services/comment-service";
 
-interface CommentWithDetails extends Comment {
-    ownerImage?: string;
-    ownerUsername?: string;
-}
-
 const useComments = (postId?: string) => {
     const { data: comments, isLoading, error, like: likeComment } = useData<Comment>(CommentService);
-    const [filteredComments, setFilteredComments] = useState<CommentWithDetails[]>([]);
+    const [filteredComments, setFilteredComments] = useState<Comment[]>([]);
 
     useEffect(() => {
         if (!comments) return;
@@ -22,12 +17,11 @@ const useComments = (postId?: string) => {
         }
 
         const fetchUserDetails = async () => {
-            if (!comments || comments.length === 0) return;/////////
             const userDetails: { [key: string]: { image?: string; username?: string } } = {};
 
             await Promise.all(
                 postComments.map(async (comment) => {
-                    if (comment.owner && (!userDetails[comment.owner] || !userDetails[comment.owner].username)) {
+                    if (comment.owner && !userDetails[comment.owner]) {
                         try {
                             const [img, username] = await Promise.all([
                                 getUserImgById(comment.owner),
@@ -45,7 +39,7 @@ const useComments = (postId?: string) => {
                 })
             );
 
-            const updatedComments: CommentWithDetails[] = postComments.map((comment) => ({
+            const updatedComments: Comment[] = postComments.map((comment) => ({
                 ...comment,
                 ownerImage: userDetails[comment.owner]?.image || "/default-profile.png",
                 ownerUsername: userDetails[comment.owner]?.username || "Anonymous",
@@ -57,15 +51,7 @@ const useComments = (postId?: string) => {
         fetchUserDetails();
     }, [comments, postId]);
 
-    // ✅ Like functionality with real-time UI update
-    const likeCommentAndUpdate = async (commentId: string) => {
-        await likeComment(commentId);
-        setFilteredComments(filteredComments.map(comment =>
-            comment._id === commentId ? { ...comment, likes: (comment.likes || 0) + 1 } : comment
-        ));
-    };
-
-    return { data: filteredComments, isLoading, error, like: likeCommentAndUpdate };
+    return { data: filteredComments, isLoading, error, like: likeComment };
 };
 
 export default useComments;

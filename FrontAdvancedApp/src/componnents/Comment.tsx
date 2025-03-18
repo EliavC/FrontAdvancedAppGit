@@ -5,9 +5,10 @@ interface CommentItemProps {
     comment: Comment;
     likeComment: (id: string) => void;
     userImgUrl: string;
+    ownerUsername: string;
 }
 
-const CommentComponent: React.FC<CommentItemProps> = ({ comment, likeComment, userImgUrl }) => {
+const CommentComponent: React.FC<CommentItemProps> = ({ comment, likeComment, userImgUrl, ownerUsername }) => {
     return (
         <div className="post-card">
             <div className="post-header">

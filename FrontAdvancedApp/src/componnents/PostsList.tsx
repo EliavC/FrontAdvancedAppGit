@@ -1,28 +1,43 @@
-import React, { useState } from "react";
+import React, { useState, FC } from "react";
 import usePosts from "../hooks/usePosts";
 import PostComponent from "./Post";
 import "./styles.css";
 import CommentService, { Comment } from "../services/comment-service";
 
-const PostList = () => {
+interface PostListProps {
+  user: { username: string; email: string; _id: string }; // ✅ Ensure `_id` is included
+}
+
+const PostList: FC<PostListProps> = ({ user }) => {
     const { data: posts, isLoading, error, like } = usePosts();
     const [commentsByPost, setCommentsByPost] = useState<{ [key: string]: Comment[] }>({});
+    
+    console.log("Current User in PostList:", user);
 
-    // ✅ Ensure `addComment` exists and works correctly
+    // ✅ Ensure `addComment` assigns the correct owner
     const addComment = async (postId: string, newCommentText: string) => {
+        if (!user._id) {
+            console.error("User ID is missing, cannot add comment.");
+            return;
+        }
+
         const newComment: Comment = {
             postId,
-            owner: "Anonymous", // You can replace this with the actual user
+            owner: user._id, // ✅ Use the correct user ID
             comment: newCommentText,
             likes: 0,
         };
 
-        const response = await CommentService.create(newComment);
-        if (response && response.data) {
-            setCommentsByPost((prevComments) => ({
-                ...prevComments,
-                [postId]: [...(prevComments[postId] || []), response.data],
-            }));
+        try {
+            const response = await CommentService.create(newComment);
+            if (response && response.data) {
+                setCommentsByPost((prevComments) => ({
+                    ...prevComments,
+                    [postId]: [...(prevComments[postId] || []), response.data],
+                }));
+            }
+        } catch (error) {
+            console.error("Error adding comment:", error);
         }
     };
 
@@ -32,6 +47,7 @@ const PostList = () => {
 
     return (
         <div className="post-list">
+            <h2>Posts for {user.username}</h2> {/* ✅ Use username instead of email */}
             {posts.map((post) => (
                 <PostComponent
                     key={post._id}
@@ -40,7 +56,7 @@ const PostList = () => {
                     addComment={addComment} // ✅ Ensure `addComment` is passed
                     userImgUrl={post.ownerImage || "/default-profile.png"}
                     userName={post.ownerUsername || "Anonymous"}
-                    commentCount={post.commentCount || 0} // ✅ Ensure `commentCount` is passed
+                    commentCount={post.commentCount || 0}
                 />
             ))}
         </div>

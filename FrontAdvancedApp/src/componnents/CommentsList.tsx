@@ -19,7 +19,8 @@ const CommentsList = () => {
                     key={comment._id} 
                     comment={comment} 
                     likeComment={like} 
-                    userImgUrl={comment.ownerImage || "/default-profile.png"} // ✅ Now correctly passing user image
+                    userImgUrl={comment.ownerImage || "/default-profile.png"} // ✅ Now passing the correct image
+                    ownerUsername={comment.ownerUsername || "Anonymous"} // ✅ Now passing the correct username
                 />
             ))}
         </div>

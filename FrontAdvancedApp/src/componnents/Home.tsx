@@ -21,7 +21,7 @@ const Home: FC = () => {
       <h1>Welcome to the Home Page</h1>
       <p>You are successfully logged in.</p>
 
-      <PostList/>
+      <PostList user={user} />
 
       <button onClick={()=>{
             navigate("/profile",{state:user})

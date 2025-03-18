@@ -10,6 +10,8 @@ export interface Comment {
     owner: string,
     comment: string,//text
     likes: number; // New field for like counter
+    ownerImage?: string; // ✅ Add this field
+    ownerUsername?: string; // ✅ Add this field
 }
 const CommentService = new BaseService<Comment>("comments");
 
