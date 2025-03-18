@@ -63,6 +63,8 @@ const LogInForm: React.FC = () => {
         console.log(data.username)
         const newUser = await userService.getUserByUsername(data.username)
         console.log("new User:    ",newUser)
+        const userFromServer = newUser[0];//////////eli addd
+        localStorage.setItem("user", JSON.stringify(userFromServer));/////eli addd
         navigate("/home",{state: newUser[0]});
       } else {
         setErrorMessage("Invalid response from server.");
@@ -79,7 +81,8 @@ const LogInForm: React.FC = () => {
       if (data.tokens != "") {
         localStorage.setItem("token", data.accessToken);
         localStorage.setItem("refreshToken", data.refreshToken);
-        navigate("/home");
+        const newUser = await userService.getUserByUsername(data.username);///////eli add
+        navigate("/home", { state: newUser[0] });//////////eli addddd
       }
     } catch (err) {
       console.log("Google login error", err);

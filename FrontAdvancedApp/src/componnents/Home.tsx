@@ -28,6 +28,11 @@ const Home: FC = () => {
         }
       }>My Profile</button>
 
+      <button onClick={() => navigate("/create-post")}>
+           Create New Post
+      </button>
+
+
       <button
         onClick={() => {
             localStorage.removeItem("token");

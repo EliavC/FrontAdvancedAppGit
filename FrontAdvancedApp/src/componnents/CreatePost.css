@@ -1,0 +1,25 @@
+/* CreatePost.css */
+.create-post-container {
+    max-width: 500px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .create-post-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .create-post-form input,
+  .create-post-form textarea {
+    width: 100%;
+    padding: 8px;
+  }
+  
+  .create-post-form button {
+    padding: 8px 16px;
+    cursor: pointer;
+  }
+  

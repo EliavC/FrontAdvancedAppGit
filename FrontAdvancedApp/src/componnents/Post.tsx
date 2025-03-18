@@ -48,13 +48,14 @@ const PostComponent: React.FC<PostItemProps> = ({
     <div className="post-card">
       <div className="post-header">
         <div className="user-info">
-          <img src={userImgUrl} alt="Profile" className="profile-img" />
+        {userImgUrl ? <img src={userImgUrl}  alt="Profile" className="profile-img" />: null}
           <span className="username">{userName || "Anonymous"}</span>
         </div>
         <button className="more-options">⋮</button>
       </div>
 
-      <img src={post.imgUrlPost} className="post-image" alt="post" />
+      {post.imgUrlPost ? <img src={post.imgUrlPost} className="post-image" alt="Post" />: null}
+
 
       <p className="caption">
         <strong>{userName}</strong> {post.content}
