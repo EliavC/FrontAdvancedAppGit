@@ -11,18 +11,17 @@ const CommentComponent: React.FC<CommentItemProps> = ({ comment, likeComment, us
     return (
         <div className="post-card">
             <div className="post-header">
-                <img src={userImgUrl} alt="Profile" className="profile-img" />
-                <span className="username">{comment.owner || "Anonymous"}</span>
+                <img src={comment.ownerImage || userImgUrl} alt="Profile" className="profile-img" />
+                <span className="username">{comment.ownerUsername || "Anonymous"}</span> 
                 <button className="more-options">⋮</button>
             </div>
 
             <div className="post-actions">
-                {/* ✅ Fix: Call `likeComment` when clicking the heart button */}
                 <button onClick={() => likeComment(comment._id ?? "")} className="action-btn">❤️</button>
-                <span>{comment.likes ?? 0} likes</span> {/* ✅ Display like count */}
+                <span>{comment.likes ?? 0} likes</span> 
             </div>
 
-            <p className="caption"><strong>{comment.owner}</strong> {comment.comment}</p>
+            <p className="caption"><strong>{comment.ownerUsername}</strong> {comment.comment}</p>
         </div>
     );
 };

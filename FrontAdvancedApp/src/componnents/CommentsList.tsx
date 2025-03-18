@@ -5,7 +5,7 @@ import CommentComponent from "./Comment";
 
 const CommentsList = () => {
     const { postId } = useParams(); 
-    const { data: comments, isLoading, error, like } = useComments(postId); // ✅ Fetch only comments for this post
+    const { data: comments, isLoading, error, like } = useComments(postId); 
 
     if (isLoading) return <p>Loading comments...</p>;
     if (error) return <p style={{ color: "red" }}>Error: {error}</p>;
@@ -18,8 +18,8 @@ const CommentsList = () => {
                 <CommentComponent 
                     key={comment._id} 
                     comment={comment} 
-                    likeComment={like} // ✅ Ensure `likeComment` is passed
-                    userImgUrl={comment.ownerImage || "/default-profile.png"}
+                    likeComment={like} 
+                    userImgUrl={comment.ownerImage || "/default-profile.png"} // ✅ Now correctly passing user image
                 />
             ))}
         </div>
