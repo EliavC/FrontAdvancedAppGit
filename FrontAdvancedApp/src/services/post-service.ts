@@ -9,7 +9,7 @@ export interface Post  {
     title: string,
     content: string,
     owner: string,
-    likes: number,
+    likes: string[],
     imgUrlPost?: string,
     commentCount?: number,
 

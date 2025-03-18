@@ -1,57 +1,60 @@
+// useComments.ts
 import { useEffect, useState } from "react";
 import useData from "./useData";
-import { Comment } from "../services/comment-service";
+import CommentService, { Comment } from "../services/comment-service";
 import { getUserImgById, getUserNameById } from "../services/user_service";
-import CommentService from "../services/comment-service";
 
 const useComments = (postId?: string) => {
-    const { data: comments, isLoading, error, like: likeComment } = useData<Comment>(CommentService);
-    const [filteredComments, setFilteredComments] = useState<Comment[]>([]);
+  const {data: comments,isLoading,error,like: likeComment, } = useData<Comment>(CommentService);
 
-    useEffect(() => {
-        if (!comments) return;
+  const [filteredComments, setFilteredComments] = useState<Comment[]>([]);
 
-        let postComments = comments;
-        if (postId) {
-            postComments = comments.filter(comment => comment.postId === postId);
-        }
+  useEffect(() => {
+    if (!comments) return;
 
-        const fetchUserDetails = async () => {
-            const userDetails: { [key: string]: { image?: string; username?: string } } = {};
+    // Filter for just the comments of this post
+    let postComments = comments;
+    if (postId) {
+      postComments = comments.filter((comment) => comment.postId === postId);
+    }
 
-            await Promise.all(
-                postComments.map(async (comment) => {
-                    if (comment.owner && !userDetails[comment.owner]) {
-                        try {
-                            const [img, username] = await Promise.all([
-                                getUserImgById(comment.owner),
-                                getUserNameById(comment.owner),
-                            ]);
+    const fetchUserDetails = async () => {
+      const userDetails: { [key: string]: { image?: string; username?: string } } = {};
 
-                            userDetails[comment.owner] = {
-                                image: img || "/default-profile.png",
-                                username: username || "Anonymous",
-                            };
-                        } catch (error) {
-                            console.error("Error fetching user details:", error);
-                        }
-                    }
-                })
-            );
+      await Promise.all(
+        postComments.map(async (comment) => {
+          if (comment.owner && !userDetails[comment.owner]) {
+            try {
+              const [img, username] = await Promise.all([
+                getUserImgById(comment.owner),
+                getUserNameById(comment.owner),
+              ]);
 
-            const updatedComments: Comment[] = postComments.map((comment) => ({
-                ...comment,
-                ownerImage: userDetails[comment.owner]?.image || "/default-profile.png",
-                ownerUsername: userDetails[comment.owner]?.username || "Anonymous",
-            }));
+              userDetails[comment.owner] = {
+                image: img || "/default-profile.png",
+                username: username || "Anonymous",
+              };
+            } catch (error) {
+              console.error("Error fetching user details:", error);
+            }
+          }
+        })
+      );
 
-            setFilteredComments(updatedComments);
-        };
+      // Add ownerImage / ownerUsername to each comment
+      const updatedComments: Comment[] = postComments.map((comment) => ({
+        ...comment,
+        ownerImage: userDetails[comment.owner]?.image || "/default-profile.png",
+        ownerUsername: userDetails[comment.owner]?.username || "Anonymous",
+      }));
 
-        fetchUserDetails();
-    }, [comments, postId]);
+      setFilteredComments(updatedComments);
+    };
 
-    return { data: filteredComments, isLoading, error, like: likeComment };
+    fetchUserDetails();
+  }, [comments, postId]);
+
+  return { data: filteredComments, isLoading, error, like: likeComment };
 };
 
 export default useComments;

@@ -25,7 +25,7 @@ const PostList: FC<PostListProps> = ({ user }) => {
             postId,
             owner: user._id, // ✅ Use the correct user ID
             comment: newCommentText,
-            likes: 0,
+            likes: [],
         };
 
         try {

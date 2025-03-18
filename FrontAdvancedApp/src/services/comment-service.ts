@@ -9,7 +9,7 @@ export interface Comment {
     postId: string,
     owner: string,
     comment: string,//text
-    likes: number; // New field for like counter
+    likes: string[]; // New field for like counter
     ownerImage?: string; // ✅ Add this field
     ownerUsername?: string; // ✅ Add this field
 }
