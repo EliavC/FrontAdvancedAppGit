@@ -5,7 +5,7 @@ import RegistrationForm from "./RegistrationForm"
 import { BrowserRouter as Router, Route, Routes ,Navigate} from "react-router-dom";
 import LogInForm from "./LogInForm"
 import Home from "./Home"
-
+import Profile from "./Profile"
 
 function App() {
   return (
@@ -16,6 +16,7 @@ function App() {
         <Route path="/register" element={<RegistrationForm />} />
         <Route path="/login" element={<LogInForm />} /> 
         <Route path="/home" element={<Home/>} /> 
+        <Route path="/profile" element={<Profile/>} /> 
       </Routes>
     </Router>
   );

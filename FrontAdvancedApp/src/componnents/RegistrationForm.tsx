@@ -6,22 +6,9 @@ import { useForm } from 'react-hook-form'
 import userService, { User } from '../services/user_service'
 import { useNavigate } from "react-router-dom"
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google'
-import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod"; 
+import {userValidSchema, profileSchema} from "../services/validationSchema_service"
 
-const schema = z.object({
-    username: z.string().min(1, "Username must be at least 2 characters"),
-    email: z.string().email("Invalid email format"),
-    password: z.string().min(1, "Password must be at least 1 characters"),
-    img: z
-      .instanceof(FileList)
-      .optional() 
-      .refine(
-        (files) => !files || files.length === 0 || files[0]?.size <= 5 * 1024 * 1024,
-        "Max file size is 5MB"), 
-  });
-
-type FormData = z.infer<typeof schema>;
 
 const RegistrationForm: FC = () => {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -32,13 +19,13 @@ const RegistrationForm: FC = () => {
         handleSubmit,
         watch,
         formState: { errors },
-      } = useForm<FormData>({
-        resolver: zodResolver(schema),
+      } = useForm<userValidSchema>({
+        resolver: zodResolver(profileSchema),
       });
     const [img] = watch(["img"])
     const inputFileRef: { current: HTMLInputElement | null } = { current: null }
     
-    const onSubmit = async (data: FormData) => {
+    const onSubmit = async (data: userValidSchema) => {
         try {
           setErrorMessage(null); 
           console.log("Form Data:", data);

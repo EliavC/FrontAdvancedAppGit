@@ -14,6 +14,18 @@ export interface User {
     accessToken?: string;
   }
 
+const getUserByUsername = async(username:string) =>{
+  try{
+    console.log("1    ",username)
+    const response = await apiClient.get('/auth/username',{params:{username}})
+    console.log(" 4   ",response.data)
+    return response.data
+  }catch (error) {
+    console.error("Error fetching user data:", error);
+    return null;
+}
+}
+
   export const getUserById = async (userId: string) => {
     try {
         const response = await apiClient.get(`/auth/users/${userId}`);
@@ -92,17 +104,33 @@ const loginWithGoogle = async (credentialResponse: CredentialResponse) => {
         "/auth/login",
         user
       );
-  
-      if (response.data.accessToken && response.data.refreshToken) {
+      
+      if (response.data.accessToken && response.data.refreshToken ) {
         localStorage.setItem("token", response.data.accessToken);
         localStorage.setItem("refreshToken", response.data.refreshToken);
       }
-      return response;
+      console.log(user._id)
+      return response
     } catch (error) {
       console.error("Login error:", error);
       throw error;
     }
   };
+
+  const updateProfile = async(user:User)=>{
+    try {
+      const abortController = new AbortController();
+      const response = await apiClient.put(
+          "/auth/userUpdate",
+          user, 
+          { signal: abortController.signal }
+      );
+      return { response, abort: () => abortController.abort() };
+  } catch (error) {
+      console.error("Error updating user profile:", error);
+      return null;
+  }
+  }
   
   const refreshAccessToken = async () => {
     try {
@@ -143,7 +171,9 @@ const uploadImage = (img: File) => {
 
 
 
-export default { register, 
+export default { 
+    updateProfile,
+    register, 
     uploadImage ,
     logIn,
     logout,
@@ -151,5 +181,6 @@ export default { register,
     registerWithGoogle,
     getUserById,
     getUserImgById,
-    loginWithGoogle
+    loginWithGoogle,
+    getUserByUsername
 };

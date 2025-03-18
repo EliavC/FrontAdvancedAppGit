@@ -57,10 +57,13 @@ const LogInForm: React.FC = () => {
       };
 
       const response = await userService.logIn(user); 
-
-      if (response.data.accessToken) {
+      console.log("response:   ", response)
+      if (response.data.accessToken ) {
         setAccessToken(response.data.accessToken);
-        navigate("/home");
+        console.log(data.username)
+        const newUser = await userService.getUserByUsername(data.username)
+        console.log("new User:    ",newUser)
+        navigate("/home",{state: newUser[0]});
       } else {
         setErrorMessage("Invalid response from server.");
       }

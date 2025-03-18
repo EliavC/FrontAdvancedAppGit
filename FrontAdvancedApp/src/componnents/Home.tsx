@@ -1,12 +1,13 @@
 import { FC, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import user_service from "../services/user_service";
-import ItemsList from "./ItemsList";
 import PostList from "./PostsList";
 
 const Home: FC = () => {
+  const location = useLocation();
   const navigate = useNavigate();
-  
+  const user = location.state
+  console.log("home user:     ",user.email)
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -20,9 +21,12 @@ const Home: FC = () => {
       <h1>Welcome to the Home Page</h1>
       <p>You are successfully logged in.</p>
 
-      <PostList
-        
-      />
+      <PostList/>
+
+      <button onClick={()=>{
+            navigate("/profile",{state:user})
+        }
+      }>My Profile</button>
 
       <button
         onClick={() => {
