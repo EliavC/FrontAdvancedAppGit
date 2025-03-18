@@ -17,8 +17,9 @@ const CommentComponent: React.FC<CommentItemProps> = ({ comment, likeComment, us
             </div>
 
             <div className="post-actions">
+                {/* ✅ Fix: Call `likeComment` when clicking the heart button */}
                 <button onClick={() => likeComment(comment._id ?? "")} className="action-btn">❤️</button>
-                <span>{comment.likes ?? 0} likes</span> {/* ✅ Show likes count */}
+                <span>{comment.likes ?? 0} likes</span> {/* ✅ Display like count */}
             </div>
 
             <p className="caption"><strong>{comment.owner}</strong> {comment.comment}</p>

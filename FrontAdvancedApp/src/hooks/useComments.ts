@@ -45,10 +45,12 @@ const useComments = (postId?: string) => {
 
     // ✅ Fix: Update UI when liking a comment
     const likeCommentAndUpdate = async (commentId: string) => {
-        await likeComment(commentId);
-        setFilteredComments(filteredComments.map(comment =>
+        const updatedComments = filteredComments.map((comment) =>
             comment._id === commentId ? { ...comment, likes: (comment.likes || 0) + 1 } : comment
-        ));
+        );
+        setFilteredComments(updatedComments); // ✅ Update UI instantly
+
+        await likeComment(commentId); // ✅ Make API request after updating UI
     };
 
     return { data: filteredComments, isLoading, error, like: likeCommentAndUpdate };

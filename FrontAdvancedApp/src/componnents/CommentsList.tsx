@@ -4,8 +4,8 @@ import useComments from "../hooks/useComments";
 import CommentComponent from "./Comment";
 
 const CommentsList = () => {
-    const { postId } = useParams(); // ✅ Get postId from URL
-    const { data: comments, isLoading, error } = useComments(postId); // ✅ Fetch only comments for this post
+    const { postId } = useParams(); 
+    const { data: comments, isLoading, error, like } = useComments(postId); // ✅ Fetch only comments for this post
 
     if (isLoading) return <p>Loading comments...</p>;
     if (error) return <p style={{ color: "red" }}>Error: {error}</p>;
@@ -18,7 +18,7 @@ const CommentsList = () => {
                 <CommentComponent 
                     key={comment._id} 
                     comment={comment} 
-                    likeComment={() => {}} 
+                    likeComment={like} // ✅ Ensure `likeComment` is passed
                     userImgUrl={comment.ownerImage || "/default-profile.png"}
                 />
             ))}
