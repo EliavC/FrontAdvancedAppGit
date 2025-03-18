@@ -1,26 +1,29 @@
-import CommentComponent from "./Comment";
-import "./styles.css"; 
+import React from "react";
+import { useParams } from "react-router-dom";
 import useComments from "../hooks/useComments";
+import CommentComponent from "./Comment";
 
-const CommentList = () => {
-    const { data: comments, isLoading, error, like } = useComments(); // ✅ Now posts include `ownerImage`
+const CommentsList = () => {
+    const { postId } = useParams(); // ✅ Get postId from URL
+    const { data: comments, isLoading, error } = useComments(postId); // ✅ Fetch only comments for this post
 
     if (isLoading) return <p>Loading comments...</p>;
     if (error) return <p style={{ color: "red" }}>Error: {error}</p>;
-    if (!comments || comments.length === 0) return <p>No comments available.</p>;
+    if (!comments.length) return <p>No comments available for this post.</p>;
 
     return (
-        <div className="post-list"> 
+        <div className="comment-list">
+            <h2>Comments</h2>
             {comments.map((comment) => (
-                <CommentComponent
+                <CommentComponent 
                     key={comment._id} 
                     comment={comment} 
-                    likeComment={like} 
-                    userImgUrl={comment.ownerImage || "/default-profile.png"} // ✅ Now using `ownerImage`
+                    likeComment={() => {}} 
+                    userImgUrl={comment.ownerImage || "/default-profile.png"}
                 />
             ))}
         </div>
     );
 };
 
-export default CommentList;
+export default CommentsList;
