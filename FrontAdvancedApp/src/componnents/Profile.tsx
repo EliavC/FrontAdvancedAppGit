@@ -1,53 +1,4 @@
-// import { useEffect, useState } from "react";
-// import { useLocation, useNavigate } from "react-router-dom";
-// import userService, { User } from "../services/user_service";
-// import avatar from "../assets/avatar.png"; 
-// import { zodResolver } from "@hookform/resolvers/zod"; 
-// import {userValidSchema, profileSchema} from "../services/validationSchema_service"
-// import { useForm } from "react-hook-form";
 
-// const Profile: React.FC = () => {
-//     const location = useLocation();
-//     const [loading, setLoading] = useState<boolean>(true);
-//     const navigate = useNavigate();
-//     const user = location.state
-//     const {
-//             register,
-//             handleSubmit,
-//             watch,
-//             formState: { errors },
-//           } = useForm<userValidSchema>({
-//             resolver: zodResolver(profileSchema),
-//           });
-
-
-//     return (
-//         <div style={{ maxWidth: "400px", margin: "auto", textAlign: "center" }}>
-//         <h2>Profile</h2>
-//         <img
-//             src={user.imgUrl ? user.imgUrl : avatar}
-//             alt="Profile"
-//             style={{ width: "150px", height: "150px", borderRadius: "50%", marginBottom: "10px" }}/>
-//         <p><strong>Username:</strong> {user.username}</p>
-//         <p><strong>Email:</strong> {user.email}</p>
-//         <button
-//             style={{
-//             marginTop: "10px",
-//             backgroundColor: "blue",
-//             color: "white",
-//             padding: "10px",
-//             border: "none",
-//             cursor: "pointer",
-//             }}
-//             onClick={() => navigate("/home",{state:user})}
-//         >
-//             Back to Home
-//         </button>
-//         </div>
-//     );
-// };
-
-// export default Profile;
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -55,11 +6,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { profileSchema, userValidSchema } from "../services/validationSchema_service";
 import userService, { User } from "../services/user_service"
 import avatar from "../assets/avatar.png";
+import apiClient from "../services/api-client";
 
 const Profile: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const user = location.state; 
+  const [user, setUser] = useState(location.state); 
   const newId = user._id
   const [isEditing, setIsEditing] = useState(false);
   const [imagePreview, setImagePreview] = useState<string>(user.img ? URL.createObjectURL(user.img[0]) : avatar);
@@ -68,6 +20,7 @@ const Profile: React.FC = () => {
     register,
     handleSubmit,
     setValue,
+    reset,
     formState: { errors },
   } = useForm<userValidSchema>({
     resolver: zodResolver(profileSchema),
@@ -91,7 +44,7 @@ const Profile: React.FC = () => {
 
   const onSubmit = async (data: userValidSchema) => {
     try{
-        let imgUrl
+        let imgUrl 
         if(data.img){
             imgUrl = data.img.toString()
         }
@@ -100,7 +53,6 @@ const Profile: React.FC = () => {
             const response = await request;
             imgUrl = response.data.url;
         }
-        
         const newUser:User = {
             _id:newId,
             username: data.username,
@@ -108,8 +60,11 @@ const Profile: React.FC = () => {
             password: data.password,
             imgUrl: imgUrl
         };
-        console.log("newUser    ",newUser)
         const res = await userService.updateProfile(newUser)
+        if(res){
+            setUser(newUser);
+            setIsEditing(false)
+        }
     }catch (error) {
         console.error(" error:", error);
       }
@@ -240,3 +195,7 @@ const Profile: React.FC = () => {
 };
 
 export default Profile;
+function setUser(arg0: (prevUser: any) => any) {
+    throw new Error("Function not implemented.");
+}
+
