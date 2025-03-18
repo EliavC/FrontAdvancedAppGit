@@ -118,6 +118,24 @@ const loginWithGoogle = async (credentialResponse: CredentialResponse) => {
       throw error;
     }
   };
+
+  const updateProfile = async(user:User)=>{
+    try {
+      console.log("1    ",user)
+      const abortController = new AbortController();
+      console.log("2   ")
+      const response = await apiClient.put(
+          "/auth/userUpdate",
+          {user}, 
+          { signal: abortController.signal }
+      );
+      console.log("7       ",response)
+      return { response, abort: () => abortController.abort() };
+  } catch (error) {
+      console.error("Error updating user profile:", error);
+      return null;
+  }
+  }
   
   const refreshAccessToken = async () => {
     try {
@@ -158,7 +176,8 @@ const uploadImage = (img: File) => {
 
 
 
-export default { register, 
+export default { 
+    register, 
     uploadImage ,
     logIn,
     logout,
@@ -168,6 +187,7 @@ export default { register,
     getUserImgById,
     loginWithGoogle
     ,getUserNameById, 
-    getUserByUsername
+    getUserByUsername,
+    updateProfile
     
 };
