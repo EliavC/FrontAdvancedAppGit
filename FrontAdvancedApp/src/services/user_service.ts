@@ -43,11 +43,16 @@ export const getUserImgById = async (userId: string) => {
 };
 
 
-const register = (user: User) => {
+const register = async (user: User) => {
     const abortController = new AbortController()
-    const request = apiClient.post<User>('/auth/register',
+    console.log("1:     ")
+    const request = await apiClient.post<User>('/auth/register',
         user,
         { signal: abortController.signal })
+        console.log("request:     ",request)
+        if(request.data.username == "" || request.data.email==""){
+          return -1
+        }
     return { request, abort: () => abortController.abort() }
 }
 
@@ -56,11 +61,29 @@ const register = (user: User) => {
       console.log('2')
       const response = await apiClient.post("/auth/google", { credential: credentialResponse.credential });
       console.log('after axios')
+      if(response.data.email == ""){
+        return -1
+      }
       return response.data; 
     } catch (error) {
       console.error("Google OAuth Error:", error);
       throw error; 
     }
+};
+
+const loginWithGoogle = async (credentialResponse: CredentialResponse) => {
+  try {
+    console.log('2')
+    const response = await apiClient.post("/auth/googleLog", { credential: credentialResponse.credential });
+    console.log('after axios')
+    if(response.data.token == ""){
+      return -1
+    }
+    return response.data; 
+  } catch (error) {
+    console.error("Google OAuth Error:", error);
+    throw error; 
+  }
 };
 
   const logIn = async (user: User) => {
@@ -120,4 +143,13 @@ const uploadImage = (img: File) => {
 
 
 
-export default { register, uploadImage ,logIn,logout,refreshAccessToken,registerWithGoogle,getUserById,getUserImgById};
+export default { register, 
+    uploadImage ,
+    logIn,
+    logout,
+    refreshAccessToken,
+    registerWithGoogle,
+    getUserById,
+    getUserImgById,
+    loginWithGoogle
+};

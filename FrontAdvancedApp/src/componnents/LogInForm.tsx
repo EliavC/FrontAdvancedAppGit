@@ -4,13 +4,12 @@ import { useForm } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
-import userService,  { User } from "../services/user_service";
+import userService, { User } from "../services/user_service";
 import { useNavigate } from "react-router-dom";
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 
 const schema = z.object({
-  username: z.string(),
-  email: z.string().email("Invalid email format"),
+  username: z.string().min(1, "Username is required"),
   password: z.string().min(1, "Password is required"),
 });
 
@@ -41,12 +40,10 @@ const LogInForm: React.FC = () => {
         setAccessToken(null);
       }
     };
-  
+
     if (document.cookie.includes("refreshToken")) {
       autoLogin();
     }
-
-
   }, []);
 
   const onSubmit = async (data: FormData) => {
@@ -54,12 +51,12 @@ const LogInForm: React.FC = () => {
       setErrorMessage(null);
 
       const user: User = {
-        username:data.username,
-        email: data.email,
+        email:"",
+        username: data.username,
         password: data.password,
       };
 
-      const response = await userService.logIn(user); // Calls `/auth/login`
+      const response = await userService.logIn(user); 
 
       if (response.data.accessToken) {
         setAccessToken(response.data.accessToken);
@@ -69,27 +66,26 @@ const LogInForm: React.FC = () => {
       }
     } catch (error: any) {
       console.error("Login error:", error);
-      setErrorMessage(error.response?.data?.message || "Invalid credentials.");
+      setErrorMessage(error.response?.data?.message || "Invalid username or password.");
     }
   };
 
-  const loginSuccess = async(credentialResponse: CredentialResponse)=>{
-    try{
-      const data = await userService.registerWithGoogle(credentialResponse)
-      if(data.flag == -999){
-        localStorage.setItem("token",data.accessToken)
-        localStorage.setItem("refreshToken",data.refreshToken)
-        navigate('/home')
+  const loginSuccess = async (credentialResponse: CredentialResponse) => {
+    try {
+      const data = await userService.registerWithGoogle(credentialResponse);
+      if (data.tokens != "") {
+        localStorage.setItem("token", data.accessToken);
+        localStorage.setItem("refreshToken", data.refreshToken);
+        navigate("/home");
       }
-    }catch(err)
-    {
-      console.log('login error',err);
+    } catch (err) {
+      console.log("Google login error", err);
     }
-  }
+  };
 
-  const loginFailed = async()=>{
-    console.log("Google login failure")
-  }
+  const loginFailed = async () => {
+    console.log("Google login failure");
+  };
 
   return (
     <div style={{ maxWidth: "400px", margin: "auto", textAlign: "center" }}>
@@ -98,24 +94,32 @@ const LogInForm: React.FC = () => {
       {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        <input {...register("email")} type="email" placeholder="Email" />
-        {errors.email && <p style={{ color: "red" }}>{errors.email.message}</p>}
+        
         <input {...register("username")} type="text" placeholder="Username" />
-        {errors.email && <p style={{ color: "red" }}>{errors.email.message}</p>}
+        {errors.username && <p style={{ color: "red" }}>{errors.username.message}</p>}
+
         <input {...register("password")} type="password" placeholder="Password" />
         {errors.password && <p style={{ color: "red" }}>{errors.password.message}</p>}
 
         <button type="submit">Login</button>
 
         <button
-          style={{ marginTop: "10px", backgroundColor: "blue", color: "white", padding: "10px", border: "none", cursor: "pointer" }}
+          style={{
+            marginTop: "10px",
+            backgroundColor: "blue",
+            color: "white",
+            padding: "10px",
+            border: "none",
+            cursor: "pointer",
+          }}
           onClick={() => navigate("/register")}
           type="button"
         >
           Go to Register
         </button>
-        <GoogleLogin onSuccess={loginSuccess} onError={loginFailed}>
-                    </GoogleLogin>
+
+
+        <GoogleLogin onSuccess={loginSuccess} onError={loginFailed} />
       </form>
     </div>
   );
