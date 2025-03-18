@@ -11,6 +11,7 @@ export interface Post  {
     owner: string,
     likes: number,
     imgUrlPost?: string,
+    commentCount?: number,
 
 }
 

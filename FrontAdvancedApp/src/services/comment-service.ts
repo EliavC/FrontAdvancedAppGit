@@ -1,8 +1,8 @@
-//import apiClient, { CanceledError } from "./api-client"
+import apiClient, { CanceledError } from "./api-client"
 import BaseService from "./base-service"
 
 
-//export { CanceledError }
+export { CanceledError }////////// mabye delete
 
 export interface Comment {
     _id?: string,

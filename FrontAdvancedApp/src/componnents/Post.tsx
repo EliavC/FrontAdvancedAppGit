@@ -1,58 +1,54 @@
-import React from "react";
-import { useNavigate } from "react-router-dom"; // ✅ Import for navigation
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; 
 import { Post } from "../services/post-service";
 
 interface PostItemProps {
     post: Post;
     likePost: (id: string) => void;
-    addComment: (postId: string, comment: string) => void;
+    addComment: (postId: string, comment: string) => void; // ✅ Ensure `addComment` is declared
     userImgUrl: string;
     userName: string;
+    commentCount: number;
 }
 
-const PostComponent: React.FC<PostItemProps> = ({ post, likePost, addComment, userImgUrl, userName }) => {
-    const navigate = useNavigate(); // ✅ Navigation Hook
-    const [newComment, setNewComment] = React.useState(""); // ✅ State for new comment
+const PostComponent: React.FC<PostItemProps> = ({ post, likePost, addComment, userImgUrl, userName, commentCount }) => {
+    const navigate = useNavigate();
+    const [newComment, setNewComment] = useState("");
 
-    // ✅ Handle adding a comment
     const handleAddComment = () => {
         if (newComment.trim() !== "") {
             addComment(post._id ?? "", newComment);
-            setNewComment(""); // Clear input field after adding comment
+            setNewComment("");
+            navigate(`/comments/${post._id}`); // ✅ Redirect after adding comment
         }
     };
 
     return (
-        <div className="post-card"> {/* Instagram-style card */}
-            
-            {/* Post Header */}
+        <div className="post-card">
             <div className="post-header">
                 <div className="user-info">
                     <img src={userImgUrl} alt="Profile" className="profile-img" />
                     <span className="username">{userName || "Anonymous"}</span>
                 </div>
-                <button className="more-options">⋮</button> {/* Top-right More Options */}
+                <button className="more-options">⋮</button>
             </div>
 
-            {/* Post Image */}
             <img src={post.imgUrlPost} className="post-image" />
 
-            {/* Post Content */}
             <p className="caption"><strong>{userName}</strong> {post.content}</p>
 
-            {/* Action Buttons & Counters */}
             <div className="post-actions">
-                <div className="action-item">
-                    <button onClick={() => likePost(post._id ?? "")} className="action-btn">❤️</button>
-                    <span className="count">{post.likes ?? 0}</span> {/* Like Counter */}
-                </div>
-                <div className="action-item comment-section">
-                    <button className="action-btn">💬</button>
-                    {/* <span className="count">{post.comments?.length ?? 0}</span> Comment Counter */}
-                </div>
+                <button onClick={() => likePost(post._id ?? "")} className="action-btn">❤️</button>
+                <span className="count">{post.likes ?? 0}</span>
             </div>
 
-            {/* Add Comment Section */}
+            {/* ✅ Display the number of comments */}
+            <div className="action-item">
+                <button className="action-btn">💬</button>
+                <span className="count">{commentCount ?? 0} comments</span>
+            </div>
+
+            {/* ✅ Add comment section */}
             <div className="add-comment">
                 <input
                     type="text"
@@ -64,7 +60,6 @@ const PostComponent: React.FC<PostItemProps> = ({ post, likePost, addComment, us
                 <button onClick={handleAddComment} className="comment-btn">Add</button>
             </div>
 
-            {/* View Comments Button */}
             <button onClick={() => navigate(`/comments/${post._id}`)} className="view-comments-btn">
                 View Comments
             </button>

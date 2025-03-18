@@ -3,11 +3,12 @@ import useData from "./useData";
 import PostService from "../services/post-service";
 import { Post } from "../services/post-service";
 import { getUserImgById, getUserNameById } from "../services/user_service";
+import CommentService from "../services/comment-service";
 
-// ✅ Define a single interface that includes both `ownerImage` and `ownerUsername`
 interface PostWithDetails extends Post {
     ownerImage?: string;
     ownerUsername?: string;
+    commentCount?: number; // ✅ Add comment count
 }
 
 const usePosts = () => {
@@ -15,10 +16,11 @@ const usePosts = () => {
     const [postsWithDetails, setPostsWithDetails] = useState<PostWithDetails[]>([]);
 
     useEffect(() => {
-        const fetchUserDetails = async () => {
+        const fetchDetails = async () => {
             if (!posts || posts.length === 0) return;
 
             const userDetails: { [key: string]: { image?: string; username?: string } } = {};
+            const commentCounts: { [key: string]: number } = {};
 
             await Promise.all(
                 posts.map(async (post) => {
@@ -29,24 +31,28 @@ const usePosts = () => {
                         ]);
 
                         userDetails[post.owner] = {
-                            image: img || "/default-profile.png", // Fallback avatar
-                            username: username || "Secret Spy", // Default name
+                            image: img || "/default-profile.png",
+                            username: username || "Secret Spy",
                         };
                     }
+
+                    // ✅ Get comment count for each post
+                    const comments = await CommentService.getAll();
+                    commentCounts[post._id ?? ""] = comments?.data?.filter(c => c.postId === post._id).length || 0;
                 })
             );
 
-            // Attach details to posts
             const updatedPosts: PostWithDetails[] = posts.map((post) => ({
                 ...post,
                 ownerImage: userDetails[post.owner]?.image || "/default-profile.png",
                 ownerUsername: userDetails[post.owner]?.username || "Secret Spy",
+                commentCount: commentCounts[post._id ?? ""] || 0, // ✅ Set comment count
             }));
 
             setPostsWithDetails(updatedPosts);
         };
 
-        fetchUserDetails();
+        fetchDetails();
     }, [posts]);
 
     return { data: postsWithDetails, isLoading, error, like };
