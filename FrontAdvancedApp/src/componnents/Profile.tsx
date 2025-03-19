@@ -31,10 +31,23 @@ const Profile: React.FC = () => {
     }
   }, [img]);
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0].size <= 5 * 1024 * 1024) {
-      setValue("img", e.target.files);
-      setImagePreview(URL.createObjectURL(e.target.files[0]));
+//   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     if (e.target.files && e.target.files[0].size <= 5 * 1024 * 1024) {
+//       setValue("img", e.target.files);
+//       setImagePreview(URL.createObjectURL(e.target.files[0]));
+//     }
+//   };
+const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+  
+      if (file.size <= 5 * 1024 * 1024) {
+        setValue("img", e.target.files as any);
+        
+        if (file instanceof File) {
+          setImagePreview(URL.createObjectURL(file));
+        }
+      }
     }
   };
 
@@ -48,13 +61,13 @@ const Profile: React.FC = () => {
         const response = await request;
         imgUrl = response.data.url;
       }
-
+      console.log("img:      ",user.imgUrl)
       const updatedUser: User = {
         _id: user._id,
         username: data.username,
         email: data.email,
         password: data.password,
-        imgUrl,
+        imgUrl:imgUrl,
       };
 
       await userService.updateProfile(updatedUser);

@@ -136,7 +136,7 @@ const loginWithGoogle = async (credentialResponse: CredentialResponse) => {
 
   const updateProfile = async(user:User)=>{
     try {
-     
+     console.log(user)
       const abortController = new AbortController();
      
       const response = await apiClient.put(
