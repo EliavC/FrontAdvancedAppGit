@@ -111,6 +111,7 @@ const loginWithGoogle = async (credentialResponse: CredentialResponse) => {
       if (response.data.accessToken && response.data.refreshToken) {
         localStorage.setItem("token", response.data.accessToken);
         localStorage.setItem("refreshToken", response.data.refreshToken);
+        localStorage.setItem("user", JSON.stringify(user));//////////eli addd
       }
       return response;
     } catch (error) {
@@ -158,6 +159,7 @@ const loginWithGoogle = async (credentialResponse: CredentialResponse) => {
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("refreshToken");
+    localStorage.removeItem("user");//////////eli addd
     document.cookie = "refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"
   };
 

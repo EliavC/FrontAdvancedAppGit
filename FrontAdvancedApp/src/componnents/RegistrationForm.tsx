@@ -68,14 +68,14 @@ const RegistrationForm: FC = () => {
 
     const onGoogleRegisterSuccess = async (credentialResponse: CredentialResponse)=>{
         try{
-            console.log('1')
             const data = await userService.registerWithGoogle(credentialResponse)
-            console.log('5')
-            if(typeof data == "number"){
-                alert("Ur already registered")
-                navigate('/login')
-            }
-            else{
+            console.log("Google register response:", data);
+            if (!data.username) {
+                // Means the server returned empty fields => user is already registered
+                alert("You are already registered. Please log in using your credentials.");
+                navigate("/login");
+
+            }else{
                 localStorage.setItem("token",data.accessToken)
                 localStorage.setItem("refreshToken",data.refreshToken)
                 navigate('/home')

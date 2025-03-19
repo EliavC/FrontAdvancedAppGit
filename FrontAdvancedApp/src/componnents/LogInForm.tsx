@@ -1,5 +1,3 @@
-
-
 import { useForm } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -41,51 +39,124 @@ const LogInForm: React.FC = () => {
       }
     };
 
+    // If we have a refreshToken cookie, try an auto-login flow
     if (document.cookie.includes("refreshToken")) {
       autoLogin();
     }
   }, []);
 
+  // 1) Normal username/password login
   const onSubmit = async (data: FormData) => {
     try {
       setErrorMessage(null);
 
       const user: User = {
-        email:"",
+        email: "",
         username: data.username,
         password: data.password,
       };
 
-      const response = await userService.logIn(user); 
-      console.log("response:   ", response)
-      if (response.data.accessToken ) {
+      const response = await userService.logIn(user);
+      console.log("response:", response);
+      if (response.data.accessToken) {
         setAccessToken(response.data.accessToken);
-        console.log(data.username)
-        const newUser = await userService.getUserByUsername(data.username)
-        console.log("new User:    ",newUser)
-        const userFromServer = newUser[0];//////////eli addd
-        localStorage.setItem("user", JSON.stringify(userFromServer));/////eli addd
-        navigate("/home",{state: newUser[0]});
+
+        // Optionally, fetch user by username
+        const newUser = await userService.getUserByUsername(data.username);
+        const actualUser = newUser && newUser.length > 0 ? newUser[0] : null;
+        if (!actualUser) {
+          setErrorMessage("No user found for that username.");
+          return;
+        }
+
+        localStorage.setItem("user", JSON.stringify(actualUser));
+        navigate("/home", { state: actualUser });
       } else {
         setErrorMessage("Invalid response from server.");
       }
     } catch (error: any) {
       console.error("Login error:", error);
-      setErrorMessage(error.response?.data?.message || "Invalid username or password.");
+      setErrorMessage(
+        error.response?.data?.message || "Invalid username or password."
+      );
     }
   };
 
+  // 2) Google login callback
   const loginSuccess = async (credentialResponse: CredentialResponse) => {
     try {
+      // 2.1) Attempt to "register with Google"
+      // if user doesn't exist, your server will create them
+      // if user does exist, your server returns empty fields
       const data = await userService.registerWithGoogle(credentialResponse);
-      if (data.tokens != "") {
+      console.log("googleRegister response:", data);
+
+      // If the user was newly created, you might get data.accessToken, data.username, etc.
+      if (data.accessToken) {
+        // brand-new Google user
         localStorage.setItem("token", data.accessToken);
         localStorage.setItem("refreshToken", data.refreshToken);
-        const newUser = await userService.getUserByUsername(data.username);///////eli add
-        navigate("/home", { state: newUser[0] });//////////eli addddd
+
+        // If you want to fetch them from DB by username, do so:
+        if (!data.username) {
+          setErrorMessage("No username from Google response.");
+          return;
+        }
+        const existingUserArr = await userService.getUserByUsername(data.username);
+        const actualUser =
+          existingUserArr && existingUserArr.length > 0
+            ? existingUserArr[0]
+            : null;
+
+        if (!actualUser) {
+          setErrorMessage("No user found for that username. (Google new user)");
+          return;
+        }
+
+        localStorage.setItem("user", JSON.stringify(actualUser));
+        navigate("/home");
+      } else {
+        // 2.2) Means the server returned empty fields => user already exists
+        // => Let's do the second call to "loginWithGoogle"
+        console.log("User probably already existed, calling googleLogIn...");
+        const loginData = await userService.loginWithGoogle(credentialResponse);
+        console.log("googleLogIn response:", loginData);
+
+        if (loginData.accessToken) {
+          // Now we have tokens for the existing user
+          localStorage.setItem("token", loginData.accessToken);
+          localStorage.setItem("refreshToken", loginData.refreshToken);
+
+          // If we want to fetch DB user by username:
+          if (!loginData.username) {
+            setErrorMessage("No username from googleLogIn response.");
+            return;
+          }
+          const existingUserArr = await userService.getUserByUsername(
+            loginData.username
+          );
+          const actualUser =
+            existingUserArr && existingUserArr.length > 0
+              ? existingUserArr[0]
+              : null;
+
+          if (!actualUser) {
+            setErrorMessage("No user found for that username. (Google existing user)");
+            return;
+          }
+
+          localStorage.setItem("user", JSON.stringify(actualUser));
+          navigate("/home");
+        } else {
+          // If googleLogIn also fails to give tokens, we show an error
+          setErrorMessage(
+            "Google sign-in failed or user already exists but we can't log you in."
+          );
+        }
       }
     } catch (err) {
       console.log("Google login error", err);
+      setErrorMessage("Google login error");
     }
   };
 
@@ -100,12 +171,23 @@ const LogInForm: React.FC = () => {
       {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        
-        <input {...register("username")} type="text" placeholder="Username" />
-        {errors.username && <p style={{ color: "red" }}>{errors.username.message}</p>}
+        <input
+          {...register("username")}
+          type="text"
+          placeholder="Username"
+        />
+        {errors.username && (
+          <p style={{ color: "red" }}>{errors.username.message}</p>
+        )}
 
-        <input {...register("password")} type="password" placeholder="Password" />
-        {errors.password && <p style={{ color: "red" }}>{errors.password.message}</p>}
+        <input
+          {...register("password")}
+          type="password"
+          placeholder="Password"
+        />
+        {errors.password && (
+          <p style={{ color: "red" }}>{errors.password.message}</p>
+        )}
 
         <button type="submit">Login</button>
 
@@ -124,7 +206,7 @@ const LogInForm: React.FC = () => {
           Go to Register
         </button>
 
-
+        {/* Google login button */}
         <GoogleLogin onSuccess={loginSuccess} onError={loginFailed} />
       </form>
     </div>

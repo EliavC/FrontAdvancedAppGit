@@ -1,43 +1,55 @@
 import { FC, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import user_service from "../services/user_service";
+import { useNavigate } from "react-router-dom";
 import PostList from "./PostsList";
 
+/**
+ * By removing `useLocation()` and reading from localStorage,
+ * we ensure a valid user object is present if they're logged in.
+ */
 const Home: FC = () => {
-  const location = useLocation();
   const navigate = useNavigate();
-  const user = location.state
-  console.log("home user:     ",user.email)
+
+  // Load user from localStorage
+  const userStr = localStorage.getItem("user");
+  const user = userStr ? JSON.parse(userStr) : null;
+
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (!token) {
+    // If no token or no user ID => not logged in
+    if (!token || !user?._id) {
       navigate("/login");
     }
-  }, [navigate]);
+  }, [navigate, user]);
 
+  // Optional: debug
+  console.log("Home user:", user);
 
   return (
     <div style={{ textAlign: "center", padding: "50px" }}>
       <h1>Welcome to the Home Page</h1>
       <p>You are successfully logged in.</p>
 
-      <PostList user={user} />
-
-      <button onClick={()=>{
-            navigate("/profile",{state:user})
-        }
-      }>My Profile</button>
-
-      <button onClick={() => navigate("/create-post")}>
-           Create New Post
-      </button>
-
+      {/* Pass the user to PostList. No more "missing user._id" errors */}
+      {user && <PostList user={user} />}
 
       <button
         onClick={() => {
-            localStorage.removeItem("token");
-            localStorage.removeItem("refreshToken");
-          navigate("/login"); 
+          // Navigate to profile, optionally passing user in state if you want:
+          navigate("/profile", { state: user });
+        }}
+      >
+        My Profile
+      </button>
+
+      <button onClick={() => navigate("/create-post")}>Create New Post</button>
+
+      <button
+        onClick={() => {
+          // Clear everything on logout
+          localStorage.removeItem("token");
+          localStorage.removeItem("refreshToken");
+          localStorage.removeItem("user");
+          navigate("/login");
         }}
         style={{
           marginTop: "20px",
