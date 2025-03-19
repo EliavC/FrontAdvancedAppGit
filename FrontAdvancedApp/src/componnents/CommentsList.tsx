@@ -1,30 +1,44 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import useComments from "../hooks/useComments";
+import CommentService from "../services/comment-service";
 import CommentComponent from "./Comment";
 
-const CommentsList = () => {
-    const { postId } = useParams(); 
-    const { data: comments, isLoading, error, like } = useComments(postId); 
+interface CommentsListProps {
+  user: { _id: string };
+}
 
-    if (isLoading) return <p>Loading comments...</p>;
-    if (error) return <p style={{ color: "red" }}>Error: {error}</p>;
-    if (!comments.length) return <p>No comments available for this post.</p>;
+const CommentsList: React.FC<CommentsListProps> = ({ user }) => {
+  const { postId } = useParams();
+  const location = useLocation();
+  const allowDelete = location.state?.allowDelete ?? false;  // explicitly read state here
 
-    return (
-        <div className="comment-list">
-            <h2>Comments</h2>
-            {comments.map((comment) => (
-                <CommentComponent 
-                    key={comment._id} 
-                    comment={comment} 
-                    likeComment={like} 
-                    userImgUrl={comment.ownerImage || "/default-profile.png"} // ✅ Now passing the correct image
-                    ownerUsername={comment.ownerUsername || "Anonymous"} // ✅ Now passing the correct username
-                />
-            ))}
-        </div>
-    );
+  const { data: comments, isLoading, error, like } = useComments(postId);
+
+  const deleteComment = async (id: string) => {
+    await CommentService.delete(id);
+    window.location.reload();
+  };
+
+  if (isLoading) return <p>Loading comments...</p>;
+  if (error) return <p>Error loading comments.</p>;
+
+  return (
+    <div>
+      {comments.map(comment => (
+        <CommentComponent
+          key={comment._id}
+          comment={comment}
+          likeComment={like}
+          userImgUrl={comment.ownerImage || "/default-profile.png"}
+          ownerUsername={comment.ownerUsername || "Anonymous"}
+          deleteComment={
+            allowDelete && comment.owner === user._id ? deleteComment : undefined
+          } // explicitly conditional here
+        />
+      ))}
+    </div>
+  );
 };
 
 export default CommentsList;

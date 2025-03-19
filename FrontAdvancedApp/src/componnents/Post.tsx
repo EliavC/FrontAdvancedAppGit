@@ -11,8 +11,10 @@ interface PostItemProps {
   commentCount: number;
   // Now we also need the current user to check if they've liked
   currentUser?: { _id: string };
-}
-
+  allowEdit?: boolean; // New prop to conditionally show buttons
+  deletePost?: (id: string) => void; // New delete method
+};
+ 
 const PostComponent: React.FC<PostItemProps> = ({
   post,
   likePost,
@@ -21,6 +23,7 @@ const PostComponent: React.FC<PostItemProps> = ({
   userName,
   commentCount,
   currentUser,
+  deletePost,
 }) => {
   const navigate = useNavigate();
   const [newComment, setNewComment] = useState("");
@@ -30,11 +33,17 @@ const PostComponent: React.FC<PostItemProps> = ({
     ? post.likes?.includes(currentUser._id)
     : false;
 
-  const handleAddComment = () => {
+  const handleAddComment = async() => {
     if (newComment.trim() !== "") {
       addComment(post._id ?? "", newComment);
       setNewComment("");
       navigate(`/comments/${post._id}`);
+    }
+  };
+
+  const handleDelete = () => {
+    if (deletePost && post._id) {
+        deletePost(post._id);
     }
   };
 
@@ -51,7 +60,7 @@ const PostComponent: React.FC<PostItemProps> = ({
         {userImgUrl ? <img src={userImgUrl}  alt="Profile" className="profile-img" />: null}
           <span className="username">{userName || "Anonymous"}</span>
         </div>
-        <button className="more-options">⋮</button>
+        {deletePost && <button onClick={handleDelete}>🗑️ Delete</button>}
       </div>
 
       {post.imgUrlPost ? <img src={post.imgUrlPost} className="post-image" alt="Post" />: null}
@@ -86,12 +95,14 @@ const PostComponent: React.FC<PostItemProps> = ({
         </button>
       </div>
 
-      <button
-        onClick={() => navigate(`/comments/${post._id}`)}
-        className="view-comments-btn"
-      >
-        View Comments
-      </button>
+      // Example fix in PostComponent.tsx clearly:
+<button
+    onClick={() => navigate(`/comments/${post._id}`, { state: { allowDelete: true } })}
+    className="view-comments-btn"
+>
+    View Comments
+</button>
+
     </div>
   );
 };

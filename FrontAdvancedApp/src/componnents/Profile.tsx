@@ -6,6 +6,8 @@ import { profileSchema, userValidSchema } from "../services/validationSchema_ser
 import userService, { User } from "../services/user_service";
 import avatar from "../assets/avatar.png";
 import PostList from "./PostsList";
+import CommentsList from "./CommentsList";
+
 
 const Profile: React.FC = () => {
   const location = useLocation();
@@ -123,6 +125,7 @@ const Profile: React.FC = () => {
       </div>
     </div>
   );
+  {user._id && <CommentsList user={{ _id: user._id || "" }} allowDelete={true} />}
 };
 
 export default Profile;

@@ -1,14 +1,13 @@
-
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import RegistrationForm from "./RegistrationForm";
 import LogInForm from "./LogInForm";
 import Home from "./Home";
-import CommentsList from "./CommentsList";
 import Profile from "./Profile";
 import PostsList from "./PostsList";
 import CreatePost from "./CreatePost";
 import userService from "../services/user_service";
+import CommentsList from "./CommentsList";
 
 const App = () => {
     const [user, setUser] = useState<any>(null);
@@ -57,8 +56,13 @@ const App = () => {
                 <Route path="/home" element={user ? <Home /> : <Navigate to="/login" />} />
                 <Route path="/profile" element={user ? <Profile /> : <Navigate to="/login" />} />
                 <Route path="/posts" element={user ? <PostsList user={user} /> : <Navigate to="/login" />} />
-                <Route path="/comments/:postId" element={user ? <CommentsList /> : <Navigate to="/login" />} />
-                <Route path="/create-post" element={user ? <CreatePost user={user} /> : <Navigate to="/login" />} />
+
+                {/* ✅ Corrected here clearly */}
+                <Route path="/comments/:postId" element={user ? <CommentsList user={user} /> : <Navigate to="/login" />}/>
+
+
+
+                <Route path="/create-post" element={user ? <CreatePost /> : <Navigate to="/login" />} />
             </Routes>
         </Router>
     );

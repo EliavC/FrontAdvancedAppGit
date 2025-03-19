@@ -3,6 +3,7 @@ import usePosts from "../hooks/usePosts";
 import PostComponent from "./Post";
 import "./styles.css";
 import CommentService, { Comment } from "../services/comment-service";
+import PostService from "../services/post-service";
 
 
 interface PostListProps {
@@ -15,6 +16,11 @@ const PostList: FC<PostListProps> = ({ user, showUserPostsOnly = false }) => {
   const [commentsByPost, setCommentsByPost] = useState<{ [key: string]: Comment[] }>({});
 
   // ✅ Properly implement addComment function
+  const deletePost = async (postId: string) => {
+    await PostService.delete(postId);
+    window.location.reload();
+  };
+
   const addComment = async (postId: string, newCommentText: string) => {
     if (!user._id) {
       console.error("User ID is missing, cannot add comment.");
@@ -45,6 +51,8 @@ const PostList: FC<PostListProps> = ({ user, showUserPostsOnly = false }) => {
   if (error) return <p style={{ color: "red" }}>Error: {error}</p>;
   if (!posts.length) return <p>No posts available.</p>;
 
+
+
   return (
     <div className="post-list">
       <h2>{showUserPostsOnly ? "My Posts" : "All Posts"}</h2>
@@ -57,6 +65,7 @@ const PostList: FC<PostListProps> = ({ user, showUserPostsOnly = false }) => {
           userImgUrl={post.ownerImage || "/default-profile.png"}
           userName={post.ownerUsername || "Anonymous"}
           commentCount={post.commentCount || 0}
+          deletePost={showUserPostsOnly ? deletePost : undefined}
         />
       ))}
     </div>

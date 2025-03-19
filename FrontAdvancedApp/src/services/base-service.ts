@@ -39,6 +39,7 @@ class BaseService<T> {
     delete = (id: string) => this.request(apiClient.delete(`/${this.endpoint}/${id}`));
     like = (id: string) => this.request(apiClient.patch<T>(`/${this.endpoint}/${id}/like`));
     getLikes = (id: string) => this.request(apiClient.get<number>(`/${this.endpoint}/${id}/likes`));
+    
 
   
 

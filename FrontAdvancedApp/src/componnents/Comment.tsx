@@ -6,7 +6,8 @@ interface CommentItemProps {
   likeComment: (id: string) => void;
   userImgUrl: string;
   ownerUsername: string;
-  currentUser?: { _id: string };
+  currentUser?: { _id: string }
+  deleteComment?: (id: string) => void;
 }
 
 const CommentComponent: React.FC<CommentItemProps> = ({
@@ -15,6 +16,7 @@ const CommentComponent: React.FC<CommentItemProps> = ({
   userImgUrl,
   ownerUsername,
   currentUser,
+  deleteComment,
 }) => {
   // Check if the current user liked this comment
   const isLikedByCurrentUser = currentUser
@@ -30,7 +32,11 @@ const CommentComponent: React.FC<CommentItemProps> = ({
           className="profile-img"
         />
         <span className="username">{comment.ownerUsername || ownerUsername}</span>
-        <button className="more-options">⋮</button>
+        <div>
+        {deleteComment && (<button onClick={() => deleteComment(comment._id ?? "")}>🗑️ Delete</button>)}
+
+
+        </div>
       </div>
 
       <div className="post-actions">
