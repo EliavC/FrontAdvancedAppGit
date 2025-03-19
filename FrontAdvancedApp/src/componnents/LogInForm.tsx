@@ -45,42 +45,69 @@ const LogInForm: React.FC = () => {
     }
   }, []);
 
-  // 1) Normal username/password login
-  const onSubmit = async (data: FormData) => {
-    try {
-      setErrorMessage(null);
+  // Replace the onSubmit method with this fixed version
+const onSubmit = async (data: FormData) => {
+  try {
+    setErrorMessage(null);
+    const response = await userService.logIn({ email: "", ...data });
 
-      const user: User = {
-        email: "",
-        username: data.username,
-        password: data.password,
-      };
+    if (response.data.accessToken) {
+      setAccessToken(response.data.accessToken);
 
-      const response = await userService.logIn(user);
-      console.log("response:", response);
-      if (response.data.accessToken) {
-        setAccessToken(response.data.accessToken);
-
-        // Optionally, fetch user by username
-        const newUser = await userService.getUserByUsername(data.username);
-        const actualUser = newUser && newUser.length > 0 ? newUser[0] : null;
-        if (!actualUser) {
-          setErrorMessage("No user found for that username.");
-          return;
-        }
-
-        localStorage.setItem("user", JSON.stringify(actualUser));
-        navigate("/home", { state: actualUser });
-      } else {
-        setErrorMessage("Invalid response from server.");
+      const newUserArr = await userService.getUserByUsername(data.username);
+      const actualUser = newUserArr && newUserArr.length > 0 ? newUserArr[0] : null;
+      if (!actualUser) {
+        setErrorMessage("No user found for that username.");
+        return;
       }
-    } catch (error: any) {
-      console.error("Login error:", error);
-      setErrorMessage(
-        error.response?.data?.message || "Invalid username or password."
-      );
+      localStorage.setItem("user", JSON.stringify(actualUser));
+      navigate("/home", { state: actualUser });
+    } else {
+      setErrorMessage("Invalid response from server.");
     }
-  };
+  } catch (error: any) {
+    setErrorMessage(error.response?.data?.message || "Invalid username or password.");
+  }
+};
+
+
+
+  // 1) Normal username/password login
+  // const onSubmit = async (data: FormData) => {
+  //   try {
+  //     setErrorMessage(null);
+
+  //     const user: User = {
+  //       email: "",
+  //       username: data.username,
+  //       password: data.password,
+  //     };
+
+  //     const response = await userService.logIn(user);
+  //     console.log("response:", response);
+  //     if (response.data.accessToken) {
+  //       setAccessToken(response.data.accessToken);
+
+  //       // Optionally, fetch user by username
+  //       const newUser = await userService.getUserByUsername(data.username);
+  //       const actualUser = newUser && newUser.length > 0 ? newUser[0] : null;
+  //       if (!actualUser) {
+  //         setErrorMessage("No user found for that username.");
+  //         return;
+  //       }
+
+  //       localStorage.setItem("user", JSON.stringify(actualUser));
+  //       navigate("/home", { state: actualUser });
+  //     } else {
+  //       setErrorMessage("Invalid response from server.");
+  //     }
+  //   } catch (error: any) {
+  //     console.error("Login error:", error);
+  //     setErrorMessage(
+  //       error.response?.data?.message || "Invalid username or password."
+  //     );
+  //   }
+  // };
 
   // 2) Google login callback
   const loginSuccess = async (credentialResponse: CredentialResponse) => {

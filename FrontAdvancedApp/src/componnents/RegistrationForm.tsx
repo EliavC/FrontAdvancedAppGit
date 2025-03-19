@@ -27,35 +27,75 @@ const RegistrationForm: FC = () => {
     
     const onSubmit = async (data: userValidSchema) => {
         try {
-          setErrorMessage(null); 
-          console.log("Form Data:", data);
-    
+          setErrorMessage(null);
+      
           let imgUrl = "";
           if (data.img && data.img.length > 0) {
             const { request } = userService.uploadImage(data.img[0]);
             const response = await request;
             imgUrl = response.data.url;
           }
-          
+      
           const user: User = {
             username: data.username,
             email: data.email,
             password: data.password,
-            imgUrl: imgUrl || undefined, 
+            imgUrl: imgUrl || undefined,
           };
-    
-          console.log("User Data:", user);
-          const res = await userService.register(user);
-          if (typeof res === "number") {
-            setErrorMessage("Registration failed. Please check your details and try again.");
-          }
-          else{
-            navigate("/login");
-          }
-        } catch (error) {
+      
+          await userService.register(user); // simplified
+      
+          navigate("/login"); // success
+        } catch (error: any) {
           console.error("Registration error:", error);
+      
+          if (error.message) {
+            setErrorMessage(error.message);
+          } else if (error instanceof Object && error.message) {
+            setErrorMessage(error.message);
+          } else {
+            setErrorMessage("Registration failed. Please try again.");
+          }
         }
       };
+      
+
+    
+    // const onSubmit = async (data: userValidSchema) => {
+    //     try {
+    //       setErrorMessage(null); 
+    //       console.log("Form Data:", data);
+    
+    //       let imgUrl = "";
+    //       if (data.img && data.img.length > 0) {
+    //         const { request } = userService.uploadImage(data.img[0]);
+    //         const response = await request;
+    //         imgUrl = response.data.url;
+    //       }
+          
+    //       const user: User = {
+    //         username: data.username,
+    //         email: data.email,
+    //         password: data.password,
+    //         imgUrl: imgUrl || undefined, 
+    //       };
+    
+    //       console.log("User Data:", user);
+    //       const res = await userService.register(user);
+    //       navigate("/login");
+    //     } catch (error: any) {
+    //       console.error("Registration error:", error);
+    //       if (error.response && error.response.status === 409) {
+    //         setErrorMessage(error.response.data.message);
+    //       }
+    //       else{
+    //         setErrorMessage("Email already taken, pls try another one");
+    //       }
+        
+        
+        
+    //     }
+    // };
 
     useEffect(() => {
         if (img != null && img[0]) {
@@ -116,9 +156,13 @@ const RegistrationForm: FC = () => {
               }}
             >
               <h2 style={{ alignSelf: "center" }}>Registration Form</h2>
+    
+              {/* Show any server error messages */}
               {errorMessage && (
                 <p style={{ color: "red", textAlign: "center" }}>{errorMessage}</p>
-                )}
+              )}
+    
+              {/* Avatar preview */}
               <img
                 style={{ width: "200px", height: "200px", alignSelf: "center" }}
                 src={selectedImage ? URL.createObjectURL(selectedImage) : avatar}
@@ -126,7 +170,12 @@ const RegistrationForm: FC = () => {
               />
     
               <div style={{ alignSelf: "end" }}>
-                <FontAwesomeIcon className="fa-xl" icon={faImage} onClick={() => inputFileRef.current?.click()} />
+                <i
+                  onClick={() => inputFileRef.current?.click()}
+                  style={{ cursor: "pointer" }}
+                >
+                  Upload Icon
+                </i>
               </div>
     
               <input
@@ -141,24 +190,25 @@ const RegistrationForm: FC = () => {
               />
               {errors.img && <p style={{ color: "red" }}>{errors.img.message}</p>}
     
+              {/* Email */}
               <label>Email:</label>
-              <input {...register("email")} type="text" className="form-control" />
+              <input {...register("email")} type="text" />
               {errors.email && <p style={{ color: "red" }}>{errors.email.message}</p>}
     
+              {/* Username */}
               <label>Username:</label>
-              <input {...register("username")} type="text" className="form-control" />
+              <input {...register("username")} type="text" />
               {errors.username && <p style={{ color: "red" }}>{errors.username.message}</p>}
-
+    
+              {/* Password */}
               <label>Password:</label>
-              <input {...register("password")} type="password" className="form-control" />
+              <input {...register("password")} type="password" />
               {errors.password && <p style={{ color: "red" }}>{errors.password.message}</p>}
     
-              
+              {/* Submit */}
+              <button type="submit">Register</button>
     
-              <button type="submit" className="btn btn-outline-primary mt-3">
-                Register
-              </button>
-    
+              {/* Link to Login */}
               <button
                 style={{
                   marginTop: "10px",
@@ -174,11 +224,12 @@ const RegistrationForm: FC = () => {
                 Go to Login
               </button>
     
+              {/* Google registration if needed */}
               <GoogleLogin onSuccess={onGoogleRegisterSuccess} onError={onGoogleFailure} />
             </div>
           </div>
         </form>
       );
-}
+    };
 
 export default RegistrationForm

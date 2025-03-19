@@ -1,5 +1,6 @@
 import { CredentialResponse } from "@react-oauth/google";
 import apiClient, { CanceledError } from "./api-client";
+import axios from "axios";
 
 
 export { CanceledError }
@@ -56,20 +57,33 @@ const getUserByUsername = async(username:string) =>{
 }
 }
 
-
-
 const register = async (user: User) => {
-    const abortController = new AbortController()
-    console.log("1:     ")
-    const request = await apiClient.post<User>('/auth/register',
-        user,
-        { signal: abortController.signal })
-        console.log("request:     ",request)
-        if(request.data.username == "" || request.data.email==""){
-          return -1
-        }
-    return { request, abort: () => abortController.abort() }
-}
+  try {
+    const response = await apiClient.post<User>('/auth/register', user);
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      throw error.response.data; // Throws the error message/object from backend
+    } else {
+      throw new Error("Unexpected error occurred");
+    }
+  }
+};
+
+
+// const register = async (user: User) => {
+  
+//     const abortController = new AbortController()
+//     console.log("1:     ")
+//     const request = await apiClient.post<User>('/auth/register',
+//         user,
+//         { signal: abortController.signal })
+//         console.log("request:     ",request)
+//         if(request.data.username == "" || request.data.email==""){
+//           return -1
+//         }
+//     return { request, abort: () => abortController.abort() }
+// }
 
  const registerWithGoogle = async (credentialResponse: CredentialResponse) => {
     try {
@@ -122,18 +136,18 @@ const loginWithGoogle = async (credentialResponse: CredentialResponse) => {
 
   const updateProfile = async(user:User)=>{
     try {
-      console.log("1    ",user)
+     
       const abortController = new AbortController();
-      console.log("2   ")
+     
       const response = await apiClient.put(
           "/auth/userUpdate",
           {user}, 
           { signal: abortController.signal }
       );
-      console.log("7       ",response)
+     
       return { response, abort: () => abortController.abort() };
   } catch (error) {
-      console.error("Error updating user profile:", error);
+    throw error;
       return null;
   }
   }
