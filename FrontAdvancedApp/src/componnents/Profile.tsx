@@ -5,11 +5,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { profileSchema, userValidSchema } from "../services/validationSchema_service";
 import userService, { User } from "../services/user_service";
 import avatar from "../assets/avatar.png";
+import PostList from "./PostsList";
 
 const Profile: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [user, setUser] = useState<User>(location.state);
+
+  const [user, setUser] = useState<User>(
+    location.state || JSON.parse(localStorage.getItem("user") || "{}")
+  );
+
   const [isEditing, setIsEditing] = useState(false);
   const [imagePreview, setImagePreview] = useState<string>(user.imgUrl || avatar);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -58,6 +63,8 @@ const Profile: React.FC = () => {
       };
 
       await userService.updateProfile(updatedUser);
+
+      // ✅ Important change here: directly set the user after successful update
       localStorage.setItem("user", JSON.stringify(updatedUser));
       setUser(updatedUser);
       setIsEditing(false);
@@ -72,8 +79,8 @@ const Profile: React.FC = () => {
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: "auto", textAlign: "center" }}>
-      <h2>Profile</h2>
+    <div style={{ maxWidth: 700, margin: "auto", textAlign: "center", paddingBottom: "60px" }}>
+      <h2>{user.username}'s Profile</h2>
       {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
 
       <label htmlFor="profileImage">
@@ -104,7 +111,16 @@ const Profile: React.FC = () => {
           <button onClick={() => setIsEditing(true)}>Edit Profile</button>
         </>
       )}
-      <button onClick={() => navigate("/home", { state: user })}>Back to Home</button>
+
+      <button style={{ marginTop: "20px" }} onClick={() => navigate("/home")}>
+        Back to Home
+      </button>
+
+      <div style={{ marginTop: "50px" }}>
+        {user._id && (
+          <PostList key={user.imgUrl + user.username} user={{ username: user.username, email: user.email, _id: user._id }} showUserPostsOnly />
+        )}
+      </div>
     </div>
   );
 };

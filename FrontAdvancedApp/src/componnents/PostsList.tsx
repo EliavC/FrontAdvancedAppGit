@@ -4,19 +4,23 @@ import PostComponent from "./Post";
 import "./styles.css";
 import CommentService, { Comment } from "../services/comment-service";
 
+
 interface PostListProps {
   user: { username: string; email: string; _id: string };
+  showUserPostsOnly?: boolean;
 }
 
-const PostList: FC<PostListProps> = ({ user }) => {
-  const { data: posts, isLoading, error, like } = usePosts();
-  const [commentsByPost, setCommentsByPost] = useState<{
-    [key: string]: Comment[];
-  }>({});
+const PostList: FC<PostListProps> = ({ user, showUserPostsOnly = false }) => {
+  const { data: posts, isLoading, error, like } = usePosts(showUserPostsOnly ? user._id : undefined);
+  const [commentsByPost, setCommentsByPost] = useState<{ [key: string]: Comment[] }>({});
 
+<<<<<<< Updated upstream
 
 
   // Add comment with the correct user._id
+=======
+  // ✅ Properly implement addComment function
+>>>>>>> Stashed changes
   const addComment = async (postId: string, newCommentText: string) => {
     if (!user._id) {
       console.error("User ID is missing, cannot add comment.");
@@ -45,17 +49,17 @@ const PostList: FC<PostListProps> = ({ user }) => {
 
   if (isLoading) return <p>Loading posts...</p>;
   if (error) return <p style={{ color: "red" }}>Error: {error}</p>;
-  if (!posts || posts.length === 0) return <p>No posts available.</p>;
+  if (!posts.length) return <p>No posts available.</p>;
 
   return (
     <div className="post-list">
-      <h2>Posts for {user.username}</h2>
+      <h2>{showUserPostsOnly ? "My Posts" : "All Posts"}</h2>
       {posts.map((post) => (
         <PostComponent
           key={post._id}
           post={post}
           likePost={like}
-          addComment={addComment}
+          addComment={addComment} // ✅ Correctly pass addComment here
           userImgUrl={post.ownerImage || "/default-profile.png"}
           userName={post.ownerUsername || "Anonymous"}
           commentCount={post.commentCount || 0}
