@@ -14,13 +14,7 @@ const PostList: FC<PostListProps> = ({ user, showUserPostsOnly = false }) => {
   const { data: posts, isLoading, error, like } = usePosts(showUserPostsOnly ? user._id : undefined);
   const [commentsByPost, setCommentsByPost] = useState<{ [key: string]: Comment[] }>({});
 
-<<<<<<< Updated upstream
-
-
-  // Add comment with the correct user._id
-=======
   // ✅ Properly implement addComment function
->>>>>>> Stashed changes
   const addComment = async (postId: string, newCommentText: string) => {
     if (!user._id) {
       console.error("User ID is missing, cannot add comment.");
