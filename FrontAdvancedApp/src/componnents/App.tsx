@@ -1,35 +1,67 @@
-import RegistrationForm from "./RegistrationForm";
+
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import RegistrationForm from "./RegistrationForm";
 import LogInForm from "./LogInForm";
 import Home from "./Home";
-import CommentsList from "./CommentsList"; // ✅ Ensure correct import
+import CommentsList from "./CommentsList";
 import Profile from "./Profile";
-import PostsList from "./PostsList"; // ✅ Ensure correct import
-import CreatePost from "./CreatePost"; // ✅ Import CreatePost component
+import PostsList from "./PostsList";
+import CreatePost from "./CreatePost";
+import userService from "../services/user_service";
 
-function App() {
-    // ✅ Fetch user from localStorage or state (Modify as needed)
-    const storedUser = JSON.parse(localStorage.getItem("user") || "{}");// Ensure user is stored in localStorage after login
+const App = () => {
+    const [user, setUser] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const autoLogin = async () => {
+            try {
+                console.log("🔍 Checking auto-login...");
+                const storedUser = JSON.parse(localStorage.getItem("user") || "null");
+
+                if (!storedUser) {
+                    setUser(null);
+                    return;
+                }
+
+                console.log("✅ User found in localStorage:", storedUser);
+
+                const newToken = await userService.refreshAccessToken();
+                if (newToken) {
+                    console.log("✅ Token refreshed successfully");
+                    localStorage.setItem("token", newToken);
+                    setUser(storedUser);
+                } else {
+                    localStorage.removeItem("user");
+                    setUser(null);
+                }
+            } catch (err) {
+                setUser(null);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        autoLogin();
+    }, []);
+
+    if (loading) return <p>Loading...</p>;
 
     return (
         <Router>
             <Routes>
-                <Route path="/" element={<Navigate to="/login" />} />
+                <Route path="/" element={<Navigate to={user ? "/home" : "/login"} />} />
                 <Route path="/register" element={<RegistrationForm />} />
-                <Route path="/login" element={<LogInForm />} />
-                <Route path="/home" element={<Home />} />
-                <Route path="/profile" element={<Profile />} />
-                
-                {/* ✅ Pass user to PostsList */}
-                <Route path="/posts" element={<PostsList user={storedUser} />} />
-
-                {/* ✅ Ensure correct comments route */}
-                <Route path="/comments/:postId" element={<CommentsList />} />
-                <Route path="/create-post" element={<CreatePost user={storedUser} />} />
-                
+                <Route path="/login" element={<LogInForm setUser={setUser} />} /> 
+                <Route path="/home" element={user ? <Home /> : <Navigate to="/login" />} />
+                <Route path="/profile" element={user ? <Profile /> : <Navigate to="/login" />} />
+                <Route path="/posts" element={user ? <PostsList user={user} /> : <Navigate to="/login" />} />
+                <Route path="/comments/:postId" element={user ? <CommentsList /> : <Navigate to="/login" />} />
+                <Route path="/create-post" element={user ? <CreatePost user={user} /> : <Navigate to="/login" />} />
             </Routes>
         </Router>
     );
-}
+};
 
 export default App;

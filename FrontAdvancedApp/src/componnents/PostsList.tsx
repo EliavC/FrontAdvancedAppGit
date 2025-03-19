@@ -14,7 +14,7 @@ const PostList: FC<PostListProps> = ({ user }) => {
     [key: string]: Comment[];
   }>({});
 
-  console.log("Current User in PostList:", user);
+
 
   // Add comment with the correct user._id
   const addComment = async (postId: string, newCommentText: string) => {

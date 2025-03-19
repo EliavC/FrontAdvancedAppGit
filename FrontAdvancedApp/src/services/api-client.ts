@@ -4,6 +4,7 @@ export { CanceledError };
 
 const apiClient = axios.create({
     baseURL: "http://localhost:3000",
+    withCredentials:true
 });
 
 apiClient.interceptors.request.use(

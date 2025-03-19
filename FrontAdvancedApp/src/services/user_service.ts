@@ -150,23 +150,35 @@ const loginWithGoogle = async (credentialResponse: CredentialResponse) => {
   }
   }
   
+  // const refreshAccessToken = async () => {
+  //   try {
+  //     const refreshToken = localStorage.getItem("refreshToken");
+  //     if (!refreshToken) throw new Error("No refresh token found.");
+  
+  //     const response = await apiClient.post<{ accessToken: string }>("/auth/refresh", {
+  //       refreshToken,
+  //     });
+  
+  //     localStorage.setItem("token", response.data.accessToken);
+  //     return response.data.accessToken;
+  //   } catch (error) {
+  //     console.error("Failed to refresh token:", error);
+  //     logout();
+  //     return null;
+  //   }
+  // };
+
   const refreshAccessToken = async () => {
     try {
-      const refreshToken = localStorage.getItem("refreshToken");
-      if (!refreshToken) throw new Error("No refresh token found.");
-  
-      const response = await apiClient.post<{ accessToken: string }>("/auth/refresh", {
-        refreshToken,
-      });
-  
-      localStorage.setItem("token", response.data.accessToken);
-      return response.data.accessToken;
+        const response = await apiClient.post<{ accessToken: string }>("/auth/refresh", {}); // No need to send token manually
+        localStorage.setItem("token", response.data.accessToken);
+        return response.data.accessToken;
     } catch (error) {
-      console.error("Failed to refresh token:", error);
-      logout();
-      return null;
+        console.error("Failed to refresh token:", error);
+        logout();
+        return null;
     }
-  };
+};
 
   const logout = () => {
     localStorage.removeItem("token");
