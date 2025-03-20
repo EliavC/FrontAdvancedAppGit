@@ -27,22 +27,6 @@ const CommentsList: React.FC<CommentsListProps> = ({ user }) => {
   if (isLoading) return <p>Loading comments...</p>;
   if (error) return <p>Error loading comments.</p>;
 
-  // return (
-  //   <div>
-  //     {comments.map(comment => (
-  //       <CommentComponent
-  //         key={comment._id}
-  //         comment={comment}
-  //         likeComment={like}
-  //         userImgUrl={comment.ownerImage || "/default-profile.png"}
-  //         ownerUsername={comment.ownerUsername || "Anonymous"}
-  //         deleteComment={
-  //           allowDelete && comment.owner === user._id ? deleteComment : undefined
-  //         } // explicitly conditional here
-  //       />
-  //     ))}
-  //   </div>
-  // );
   return (
     <div>
       {comments.map((comment) => (
