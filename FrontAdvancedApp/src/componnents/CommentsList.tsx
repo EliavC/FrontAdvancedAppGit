@@ -19,13 +19,33 @@ const CommentsList: React.FC<CommentsListProps> = ({ user }) => {
     await CommentService.delete(id);
     window.location.reload();
   };
+  const editComment = async (id: string, updatedText: string) => {
+    await CommentService.update(id, { comment: updatedText });
+    window.location.reload(); // Refresh the comment list after editing
+  };
 
   if (isLoading) return <p>Loading comments...</p>;
   if (error) return <p>Error loading comments.</p>;
 
+  // return (
+  //   <div>
+  //     {comments.map(comment => (
+  //       <CommentComponent
+  //         key={comment._id}
+  //         comment={comment}
+  //         likeComment={like}
+  //         userImgUrl={comment.ownerImage || "/default-profile.png"}
+  //         ownerUsername={comment.ownerUsername || "Anonymous"}
+  //         deleteComment={
+  //           allowDelete && comment.owner === user._id ? deleteComment : undefined
+  //         } // explicitly conditional here
+  //       />
+  //     ))}
+  //   </div>
+  // );
   return (
     <div>
-      {comments.map(comment => (
+      {comments.map((comment) => (
         <CommentComponent
           key={comment._id}
           comment={comment}
@@ -34,7 +54,10 @@ const CommentsList: React.FC<CommentsListProps> = ({ user }) => {
           ownerUsername={comment.ownerUsername || "Anonymous"}
           deleteComment={
             allowDelete && comment.owner === user._id ? deleteComment : undefined
-          } // explicitly conditional here
+          }
+          editComment={
+            allowDelete && comment.owner === user._id ? editComment : undefined
+          }
         />
       ))}
     </div>
