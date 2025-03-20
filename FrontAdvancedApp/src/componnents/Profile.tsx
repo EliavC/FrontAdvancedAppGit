@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -8,7 +9,6 @@ import avatar from "../assets/avatar.png";
 import PostList from "./PostsList";
 import CommentsList from "./CommentsList";
 
-
 const Profile: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -18,7 +18,6 @@ const Profile: React.FC = () => {
   );
 
   const [isEditing, setIsEditing] = useState(false);
-  const [imagePreview, setImagePreview] = useState<string>(user.imgUrl || avatar);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm<userValidSchema>({
@@ -31,20 +30,13 @@ const Profile: React.FC = () => {
   });
 
   const img = watch("img");
-
+  const imagePreview = img?.[0] ? URL.createObjectURL(img[0]) : user.imgUrl || avatar;
   useEffect(() => {
-    if (img && img.length > 0) {
-      setImagePreview(URL.createObjectURL(img[0]));
+    const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
+    if (storedUser?._id) {
+      setUser(storedUser);
     }
-  }, [img]);
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0].size <= 5 * 1024 * 1024) {
-      setValue("img", e.target.files);
-      setImagePreview(URL.createObjectURL(e.target.files[0]));
-    }
-  };
-
+  }, []);
   const onSubmit = async (data: userValidSchema) => {
     try {
       setErrorMessage(null);
@@ -54,6 +46,7 @@ const Profile: React.FC = () => {
         const { request } = userService.uploadImage(data.img[0]);
         const response = await request;
         imgUrl = response.data.url;
+
       }
 
       const updatedUser: User = {
@@ -61,12 +54,10 @@ const Profile: React.FC = () => {
         username: data.username,
         email: data.email,
         password: data.password,
-        imgUrl,
+        imgUrl:imgUrl,
       };
 
       await userService.updateProfile(updatedUser);
-
-      // ✅ Important change here: directly set the user after successful update
       localStorage.setItem("user", JSON.stringify(updatedUser));
       setUser(updatedUser);
       setIsEditing(false);
@@ -84,22 +75,29 @@ const Profile: React.FC = () => {
     <div style={{ maxWidth: 700, margin: "auto", textAlign: "center", paddingBottom: "60px" }}>
       <h2>{user.username}'s Profile</h2>
       {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
-
+      {!isEditing && (
       <label htmlFor="profileImage">
         <img src={imagePreview} alt="Profile" style={{ width: 150, height: 150, borderRadius: "50%" }} />
       </label>
-      {isEditing && (
-        <input type="file" id="profileImage" accept="image/*" {...register("img")} onChange={handleImageChange} />
-      )}
-
+    )}
       {isEditing ? (
         <form onSubmit={handleSubmit(onSubmit)}>
+          <label htmlFor="profileImage">
+            <img src={imagePreview} alt="Profile" style={{ width: 150, height: 150, borderRadius: "50%" }} />
+          </label>
+
+          <input 
+            type="file" 
+            id="profileImage" 
+            accept="image/*" 
+            {...register("img")} 
+            style={{ display: "none" }} 
+          />
+          <p>Username:</p>
           <input type="text" placeholder="Username" {...register("username")} />
           {errors.username && <p style={{ color: "red" }}>{errors.username.message}</p>}
 
-          <input type="email" placeholder="Email" {...register("email")} />
-          {errors.email && <p style={{ color: "red" }}>{errors.email.message}</p>}
-
+          <p>Password:</p>
           <input type="password" placeholder="New password" {...register("password")} />
           {errors.password && <p style={{ color: "red" }}>{errors.password.message}</p>}
 

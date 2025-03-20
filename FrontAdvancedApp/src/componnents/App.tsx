@@ -24,11 +24,9 @@ const App = () => {
                     return;
                 }
 
-                console.log("✅ User found in localStorage:", storedUser);
 
                 const newToken = await userService.refreshAccessToken();
                 if (newToken) {
-                    console.log("✅ Token refreshed successfully");
                     localStorage.setItem("token", newToken);
                     setUser(storedUser);
                 } else {

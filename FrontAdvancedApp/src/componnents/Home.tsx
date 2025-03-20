@@ -21,12 +21,11 @@ const Home: FC = () => {
     }
   }, [navigate, user]);
 
-  // Optional: debug
-  console.log("Home user:", user);
+
 
   return (
     <div style={{ textAlign: "center", padding: "50px" }}>
-      <h1>Welcome to the Home Page</h1>
+      <h1>Welcome {user.username}</h1>
       <p>You are successfully logged in.</p>
 
       {/* Pass the user to PostList. No more "missing user._id" errors */}
@@ -41,7 +40,7 @@ const Home: FC = () => {
         My Profile
       </button>
 
-      <button onClick={() => navigate("/create-post")}>Create New Post</button>
+      <button onClick={() => navigate("/create-post",{state:user})}>Create New Post</button>
 
       <button
         onClick={() => {

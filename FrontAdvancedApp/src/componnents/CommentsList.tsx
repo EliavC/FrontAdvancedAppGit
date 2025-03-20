@@ -5,7 +5,8 @@ import CommentService from "../services/comment-service";
 import CommentComponent from "./Comment";
 
 interface CommentsListProps {
-  user: { _id: string };
+  user: { _id: string }
+  allowDelete?:boolean
 }
 
 const CommentsList: React.FC<CommentsListProps> = ({ user }) => {
