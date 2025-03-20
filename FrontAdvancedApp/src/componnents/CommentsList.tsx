@@ -13,7 +13,6 @@ const CommentsList: React.FC<CommentsListProps> = ({ user }) => {
   const { postId } = useParams();
   const location = useLocation();
   const allowDelete = location.state?.allowDelete ?? false;  // explicitly read state here
-
   const { data: comments, isLoading, error, like } = useComments(postId);
 
   const deleteComment = async (id: string) => {

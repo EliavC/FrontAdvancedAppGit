@@ -4,17 +4,21 @@ import PostComponent from "./Post";
 import "./styles.css";
 import CommentService, { Comment } from "../services/comment-service";
 import PostService from "../services/post-service";
+import { useLocation, useNavigate } from "react-router-dom";
 
 
 interface PostListProps {
   user: { username: string; email: string; _id: string };
   showUserPostsOnly?: boolean;
+  allowEdit?: boolean;
 }
 
 const PostList: FC<PostListProps> = ({ user, showUserPostsOnly = false }) => {
+  const location = useLocation();
   const { data: posts, isLoading, error, like } = usePosts(showUserPostsOnly ? user._id : undefined);
   const [commentsByPost, setCommentsByPost] = useState<{ [key: string]: Comment[] }>({});
-
+  const navigate = useNavigate();
+  const allowEdit = location.state?.allowEdit??false
   // ✅ Properly implement addComment function
   const deletePost = async (postId: string) => {
     await PostService.delete(postId);
@@ -37,10 +41,11 @@ const PostList: FC<PostListProps> = ({ user, showUserPostsOnly = false }) => {
     try {
       const response = await CommentService.create(newComment);
       if (response && response.data) {
-        setCommentsByPost((prevComments) => ({
-          ...prevComments,
-          [postId]: [...(prevComments[postId] || []), response.data],
-        }));
+        // setCommentsByPost((prevComments) => ({
+        //   ...prevComments,
+        //   [postId]: [...(prevComments[postId] || []), response.data],
+        // }));
+        navigate(`/comments/${postId}`,{ state: { allowDelete: true }});
       }
     } catch (error) {
       console.error("Error adding comment:", error);
@@ -61,11 +66,12 @@ const PostList: FC<PostListProps> = ({ user, showUserPostsOnly = false }) => {
           key={post._id}
           post={post}
           likePost={like}
-          addComment={addComment} // ✅ Correctly pass addComment here
+          addComment={addComment} 
           userImgUrl={post.ownerImage || "/default-profile.png"}
           userName={post.ownerUsername || "Anonymous"}
           commentCount={post.commentCount || 0}
           deletePost={showUserPostsOnly ? deletePost : undefined}
+          allowEdit={allowEdit || showUserPostsOnly}
         />
       ))}
     </div>

@@ -118,7 +118,10 @@ const Profile: React.FC = () => {
 
       <div style={{ marginTop: "50px" }}>
         {user._id && (
-          <PostList key={user.imgUrl + user.username} user={{ username: user.username, email: user.email, _id: user._id }} showUserPostsOnly />
+          <PostList key={user.imgUrl + user.username} 
+          user={{ username: user.username, email: user.email, _id: user._id }} 
+          showUserPostsOnly
+          allowEdit={true} />
         )}
       </div>
     </div>

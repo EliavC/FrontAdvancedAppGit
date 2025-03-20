@@ -17,6 +17,8 @@ export interface Post  {
 
 const PostService = new BaseService<Post>("posts");
 
+
+
 export default PostService;
 
 
