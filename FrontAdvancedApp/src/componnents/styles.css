@@ -138,7 +138,7 @@
     padding: 0;
     box-sizing: border-box;
 }
-
+                            /* LOG-IN CSS */
 .container {
     display: flex;
     min-height: 100vh;
@@ -153,15 +153,6 @@
     color: white;
     overflow: hidden;
     transition: background-image 1s ease-in-out;
-}
-.fade-in {
-    opacity: 1;
-    transition: opacity 1s ease-in-out;
-}
-
-.fade-out {
-    opacity: 0.5;
-    transition: opacity 1s ease-in-out;
 }
 
 .overlay {
@@ -260,3 +251,110 @@
     color: white;
     text-align: center;
   }
+
+                                    /* REGISTER-CSS */
+
+.registration-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: #0d0b1d;
+    position: relative;
+    color: white;
+    overflow: hidden;
+    transition: background-image 1s ease-in-out; /* Smooth fade effect */
+}
+
+/* Fade-in and fade-out effect */
+.registration-fade-in {
+    opacity: 1;
+    transition: opacity 1s ease-in-out;
+}
+
+.registration-fade-out {
+    opacity: 0.5;
+    transition: opacity 1s ease-in-out;
+}
+
+/* Dark overlay to blend background */
+.registration-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4); /* Fades the background */
+}
+
+/* Form Container */
+.registration-form-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    text-align: center;
+    backdrop-filter: blur(10px); /* Blurred glass effect */
+    position: relative;
+    z-index: 2;
+}
+
+/* Profile Picture */
+.registration-profile-pic {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin: 10px 0;
+}
+
+/* Inputs */
+.registration-input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: none;
+    outline: none;
+}
+
+
+.registration-button, .registration-register-button, .registration-google-button {
+    width: 100%;
+    max-width: 400px; 
+    height: 50px; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px; 
+    margin-top: 10px;
+}
+
+
+.registration-register-button {
+    background: #4d8df3;
+    color: white;
+}
+
+
+.registration-google-button {
+    background: white;
+    overflow: hidden;
+    padding: 0;
+}
+
+
+.registration-google-button > div {
+    width: 100% !important; 
+    height: 100% !important; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

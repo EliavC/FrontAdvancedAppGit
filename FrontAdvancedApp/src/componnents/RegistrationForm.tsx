@@ -8,12 +8,35 @@ import { useNavigate } from "react-router-dom"
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google'
 import { zodResolver } from "@hookform/resolvers/zod"; 
 import {userValidSchema, profileSchema} from "../services/validationSchema_service"
+import image1 from "../assets/image1.jpg";
+import image2 from "../assets/image2.png";
+import image3 from "../assets/image3.jpg";
+import image4 from "../assets/image4.webp";
+import image5 from "../assets/image5.webp";
 
+const images = [image1, image2, image3, image4, image5];
 
 const RegistrationForm: FC = () => {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [selectedImage, setSelectedImage] = useState<File | null>(null)
     const navigate = useNavigate()
+    const [currentImage, setCurrentImage] = useState(0);
+    const [fade, setFade] = useState(true);
+    useEffect(() => {
+      const interval = setInterval(() => {
+          setFade(false); // Start fade-out
+
+          setTimeout(() => {
+              setCurrentImage((prevImage) => (prevImage + 1) % images.length);
+              setFade(true); // Fade in new image
+          }, 500); // Wait for fade-out before changing image
+      }, 5000); // Change every 5 seconds
+
+      return () => clearInterval(interval); // Cleanup interval
+  }, []);
+
+
+
     const {
         register,
         handleSubmit,
@@ -25,6 +48,9 @@ const RegistrationForm: FC = () => {
     const [img] = watch(["img"])
     const inputFileRef: { current: HTMLInputElement | null } = { current: null }
     
+
+
+
     const onSubmit = async (data: userValidSchema) => {
         try {
           setErrorMessage(null);
@@ -60,42 +86,6 @@ const RegistrationForm: FC = () => {
       };
       
 
-    
-    // const onSubmit = async (data: userValidSchema) => {
-    //     try {
-    //       setErrorMessage(null); 
-    //       console.log("Form Data:", data);
-    
-    //       let imgUrl = "";
-    //       if (data.img && data.img.length > 0) {
-    //         const { request } = userService.uploadImage(data.img[0]);
-    //         const response = await request;
-    //         imgUrl = response.data.url;
-    //       }
-          
-    //       const user: User = {
-    //         username: data.username,
-    //         email: data.email,
-    //         password: data.password,
-    //         imgUrl: imgUrl || undefined, 
-    //       };
-    
-    //       console.log("User Data:", user);
-    //       const res = await userService.register(user);
-    //       navigate("/login");
-    //     } catch (error: any) {
-    //       console.error("Registration error:", error);
-    //       if (error.response && error.response.status === 409) {
-    //         setErrorMessage(error.response.data.message);
-    //       }
-    //       else{
-    //         setErrorMessage("Email already taken, pls try another one");
-    //       }
-        
-        
-        
-    //     }
-    // };
 
     useEffect(() => {
         if (img != null && img[0]) {
@@ -131,105 +121,152 @@ const RegistrationForm: FC = () => {
     }
 
 
+    // return (
+    //     <form onSubmit={handleSubmit(onSubmit)}>
+    //       <div
+    //         style={{
+    //           display: "flex",
+    //           justifyContent: "center",
+    //           alignItems: "center",
+    //           height: "100vh",
+    //           width: "100vw",
+    //         }}
+    //       >
+    //         <div
+    //           style={{
+    //             display: "flex",
+    //             flexDirection: "column",
+    //             backgroundColor: "lightgray",
+    //             padding: "10px",
+    //             margin: "10px",
+    //             borderRadius: "5px",
+    //             width: "50%",
+    //             justifyContent: "center",
+    //             gap: "5px",
+    //           }}
+    //         >
+    //           <h2 style={{ alignSelf: "center" }}>Registration Form</h2>
+    
+    //           {/* Show any server error messages */}
+    //           {errorMessage && (
+    //             <p style={{ color: "red", textAlign: "center" }}>{errorMessage}</p>
+    //           )}
+    
+    //           {/* Avatar preview */}
+    //           <img
+    //             style={{ width: "200px", height: "200px", alignSelf: "center" }}
+    //             src={selectedImage ? URL.createObjectURL(selectedImage) : avatar}
+    //             alt="Profile Preview"
+    //           />
+    
+    //           <div style={{ alignSelf: "end" }}>
+    //             <i
+    //               onClick={() => inputFileRef.current?.click()}
+    //               style={{ cursor: "pointer" }}
+    //             >
+    //               Upload Icon
+    //             </i>
+    //           </div>
+    
+    //           <input
+    //             ref={(item) => {
+    //               inputFileRef.current = item;
+    //               ref(item);
+    //             }}
+    //             {...restRegisterParams}
+    //             type="file"
+    //             accept="image/png, image/jpeg"
+    //             style={{ display: "none" }}
+    //           />
+    //           {errors.img && <p style={{ color: "red" }}>{errors.img.message}</p>}
+    
+    //           {/* Email */}
+    //           <label>Email:</label>
+    //           <input {...register("email")} type="text" />
+    //           {errors.email && <p style={{ color: "red" }}>{errors.email.message}</p>}
+    
+    //           {/* Username */}
+    //           <label>Username:</label>
+    //           <input {...register("username")} type="text" />
+    //           {errors.username && <p style={{ color: "red" }}>{errors.username.message}</p>}
+    
+    //           {/* Password */}
+    //           <label>Password:</label>
+    //           <input {...register("password")} type="password" />
+    //           {errors.password && <p style={{ color: "red" }}>{errors.password.message}</p>}
+    
+    //           {/* Submit */}
+    //           <button type="submit">Register</button>
+    
+    //           {/* Link to Login */}
+    //           <button
+    //             style={{
+    //               marginTop: "10px",
+    //               backgroundColor: "blue",
+    //               color: "white",
+    //               padding: "10px",
+    //               border: "none",
+    //               cursor: "pointer",
+    //             }}
+    //             onClick={() => navigate("/login")}
+    //             type="button"
+    //           >
+    //             Go to Login
+    //           </button>
+    
+    //           {/* Google registration if needed */}
+    //           <GoogleLogin onSuccess={onGoogleRegisterSuccess} onError={onGoogleFailure} />
+    //         </div>
+    //       </div>
+    //     </form>
+    //   );
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              height: "100vh",
-              width: "100vw",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                backgroundColor: "lightgray",
-                padding: "10px",
-                margin: "10px",
-                borderRadius: "5px",
-                width: "50%",
-                justifyContent: "center",
-                gap: "5px",
-              }}
-            >
-              <h2 style={{ alignSelf: "center" }}>Registration Form</h2>
-    
-              {/* Show any server error messages */}
-              {errorMessage && (
-                <p style={{ color: "red", textAlign: "center" }}>{errorMessage}</p>
-              )}
-    
-              {/* Avatar preview */}
-              <img
-                style={{ width: "200px", height: "200px", alignSelf: "center" }}
-                src={selectedImage ? URL.createObjectURL(selectedImage) : avatar}
-                alt="Profile Preview"
+      <div className={`registration-container ${fade ? "registration-fade-in" : "registration-fade-out"}`} 
+           style={{ backgroundImage: `url(${images[currentImage]})` }}>
+          
+          <div className="registration-overlay"></div> {/* Fading effect overlay */}
+
+          <div className="registration-form-container">
+              <h2>Registration Form</h2>
+
+              {errorMessage && <p className="error-text">{errorMessage}</p>}
+
+              {/* Avatar Preview */}
+              <img className="registration-profile-pic"
+                  src={selectedImage ? URL.createObjectURL(selectedImage) : avatar}
+                  alt="Profile Preview"
               />
-    
-              <div style={{ alignSelf: "end" }}>
-                <i
-                  onClick={() => inputFileRef.current?.click()}
-                  style={{ cursor: "pointer" }}
-                >
-                  Upload Icon
-                </i>
-              </div>
-    
-              <input
-                ref={(item) => {
-                  inputFileRef.current = item;
-                  ref(item);
-                }}
-                {...restRegisterParams}
-                type="file"
-                accept="image/png, image/jpeg"
-                style={{ display: "none" }}
-              />
-              {errors.img && <p style={{ color: "red" }}>{errors.img.message}</p>}
-    
-              {/* Email */}
-              <label>Email:</label>
-              <input {...register("email")} type="text" />
-              {errors.email && <p style={{ color: "red" }}>{errors.email.message}</p>}
-    
-              {/* Username */}
-              <label>Username:</label>
-              <input {...register("username")} type="text" />
-              {errors.username && <p style={{ color: "red" }}>{errors.username.message}</p>}
-    
-              {/* Password */}
-              <label>Password:</label>
-              <input {...register("password")} type="password" />
-              {errors.password && <p style={{ color: "red" }}>{errors.password.message}</p>}
-    
-              {/* Submit */}
-              <button type="submit">Register</button>
-    
-              {/* Link to Login */}
-              <button
-                style={{
-                  marginTop: "10px",
-                  backgroundColor: "blue",
-                  color: "white",
-                  padding: "10px",
-                  border: "none",
-                  cursor: "pointer",
-                }}
-                onClick={() => navigate("/login")}
-                type="button"
-              >
-                Go to Login
-              </button>
-    
-              {/* Google registration if needed */}
-              <GoogleLogin onSuccess={onGoogleRegisterSuccess} onError={onGoogleFailure} />
+
+              <input ref={(item) => { inputFileRef.current = item; ref(item); }} {...restRegisterParams}
+                  type="file" accept="image/png, image/jpeg" style={{ display: "none" }} />
+
+              {errors.img && <p className="error-text">{errors.img.message}</p>}
+
+              <form onSubmit={handleSubmit(onSubmit)}>
+                  <label>Email:</label>
+                  <input {...register("email")} type="text" className="registration-input" />
+                  {errors.email && <p className="error-text">{errors.email.message}</p>}
+
+                  <label>Username:</label>
+                  <input {...register("username")} type="text" className="registration-input" />
+                  {errors.username && <p className="error-text">{errors.username.message}</p>}
+
+                  <label>Password:</label>
+                  <input {...register("password")} type="password" className="registration-input" />
+                  {errors.password && <p className="error-text">{errors.password.message}</p>}
+
+                  <button type="submit" className="registration-button">Register</button>
+              </form>
+
+              <button className="registration-register-button" onClick={() => navigate("/login")}>Go to Login</button>
+
+              <div className="registration-google-button">
+                <GoogleLogin onSuccess={onGoogleRegisterSuccess} 
+                             onError={onGoogleFailure} />
             </div>
           </div>
-        </form>
-      );
+      </div>
+  );
     };
 
 export default RegistrationForm

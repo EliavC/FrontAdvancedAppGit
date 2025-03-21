@@ -74,37 +74,81 @@ const LogInForm: React.FC<{ setUser: (user: any) => void }> = ({ setUser }) => {
     }
   };
 
-  const loginSuccess = async (credentialResponse: CredentialResponse) => {
-    try {
-      const data = await userService.registerWithGoogle(credentialResponse);
 
-      if (data.accessToken) {
+  const loginSuccess = async (credentialResponse: CredentialResponse) => {
+    console.log("Google login response:", credentialResponse);
+
+    if (!credentialResponse?.credential) {
+        console.error("No credential received");
+        setErrorMessage("Google login failed: No credential received.");
+        return;
+    }
+
+    try {
+        const data = await userService.loginWithGoogle(credentialResponse);
+        console.log("Google API response:", data); // Debugging
+
+        if (!data || !data.accessToken) {
+            console.error("Google login error: No access token returned", data);
+            setErrorMessage("Google login failed. No access token received.");
+            return;
+        }
+
         localStorage.setItem("token", data.accessToken);
         localStorage.setItem("refreshToken", data.refreshToken);
 
         if (!data.username) {
-          setErrorMessage("No username from Google response.");
-          return;
+            setErrorMessage("No username from Google response.");
+            return;
         }
 
         const existingUserArr = await userService.getUserByUsername(data.username);
         const actualUser = existingUserArr?.length > 0 ? existingUserArr[0] : null;
 
         if (!actualUser) {
-          setErrorMessage("No user found for that username. (Google new user)");
-          return;
+            setErrorMessage("No user found for that username. (Google new user)");
+            return;
         }
 
         localStorage.setItem("user", JSON.stringify(actualUser));
         setUser(actualUser);
-        navigate("/home");
-      } else {
-        setErrorMessage("Google sign-in failed or user already exists but we can't log you in.");
-      }
+        navigate("/home", { state: actualUser });
     } catch (err) {
-      setErrorMessage("Google login error");
+        console.error("Google login error:", err);
+        setErrorMessage("Google login error. Please try again.");
     }
-  };
+};
+  // const loginSuccess = async (credentialResponse: CredentialResponse) => {
+  //   try {
+  //     const data = await userService.registerWithGoogle(credentialResponse);
+  //     console.log("data    ",data)
+  //     if (data.accessToken) {
+  //       localStorage.setItem("token", data.accessToken);
+  //       localStorage.setItem("refreshToken", data.refreshToken);
+
+  //       if (!data.username) {
+  //         setErrorMessage("No username from Google response.");
+  //         return;
+  //       }
+
+  //       const existingUserArr = await userService.getUserByUsername(data.username);
+  //       const actualUser = existingUserArr?.length > 0 ? existingUserArr[0] : null;
+
+  //       if (!actualUser) {
+  //         setErrorMessage("No user found for that username. (Google new user)");
+  //         return;
+  //       }
+
+  //       localStorage.setItem("user", JSON.stringify(actualUser));
+  //       setUser(actualUser);
+  //       navigate("/home",{state:actualUser});
+  //     } else {
+  //       setErrorMessage("Google sign-in failed or user already exists but we can't log you in.");
+  //     }
+  //   } catch (err) {
+  //     setErrorMessage("Google login error");
+  //   }
+  // };
 
   const loginFailed = () => {
     console.log("Google login failure");
@@ -143,7 +187,7 @@ const LogInForm: React.FC<{ setUser: (user: any) => void }> = ({ setUser }) => {
           <p className="divider">Or continue with</p>
 
           <div className="google-button">
-            <GoogleLogin onSuccess={() => console.log("Google Login")} onError={() => console.log("Google login failure")} />
+            <GoogleLogin onSuccess={loginSuccess} onError={() => console.log("Google login failure")} />
           </div>
         </div>
       </div>

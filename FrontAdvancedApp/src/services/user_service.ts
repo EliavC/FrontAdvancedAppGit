@@ -90,9 +90,11 @@ const register = async (user: User) => {
       console.log('2')
       const response = await apiClient.post("/auth/google", { credential: credentialResponse.credential });
       console.log('after axios')
+      console.log("response.data       ",response.data)
       if(response.data.email == ""){
         return -1
       }
+      
       return response.data; 
     } catch (error) {
       console.error("Google OAuth Error:", error);
