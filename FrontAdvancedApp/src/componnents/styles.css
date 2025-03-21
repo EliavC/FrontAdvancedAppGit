@@ -358,3 +358,144 @@
     justify-content: center;
     align-items: center;
 }
+                                        /* POSTS */
+/* Container for Posts */
+.post-list {
+    width: 90%;
+    margin: auto;
+    text-align: center;
+}
+
+/* Post Grid Layout */
+.post-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 posts per row */
+    gap: 15px;
+    margin-top: 15px;
+}
+
+/* Post Card */
+.post-card {
+    background: white;
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+    max-width: 100%;
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+    border-radius: 5px;
+    overflow: hidden;
+    min-height: 280px; /* Reduced height */
+}
+
+/* Hover Effect */
+.post-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* User Info (Centered) */
+.post-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    margin-bottom: 8px;
+}
+
+/* Profile Picture */
+.profile-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #4a90e2;
+}
+
+/* Username */
+.username {
+    font-weight: bold;
+    font-size: 13px;
+}
+
+/* Post Image */
+.post-image {
+    width: 100%;
+    height: 140px; /* Reduced height */
+    object-fit: cover;
+    border-radius: 3px;
+    margin-top: 3px;
+}
+
+/* Caption */
+.caption {
+    font-size: 13px;
+    color: #444;
+    padding: 5px;
+    text-align: left;
+}
+
+/* Post Actions */
+.post-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 3px 8px;
+}
+
+/* Like and Comment Buttons */
+.like-btn, .comment-btn {
+    background: none;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.like-btn:hover, .comment-btn:hover {
+    transform: scale(1.05);
+}
+
+/* Comments Section */
+.add-comment {
+    display: flex;
+    gap: 5px;
+    margin-top: 5px;
+    padding: 4px;
+}
+
+/* Comment Input */
+.comment-input {
+    flex: 1;
+    padding: 6px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+/* Comment Submit Button */
+.comment-submit {
+    background: #4a90e2;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background 0.2s ease;
+}
+
+.comment-submit:hover {
+    background: #357abd;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .post-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 columns on tablets */
+    }
+}
+
+@media (max-width: 768px) {
+    .post-grid {
+        grid-template-columns: repeat(1, 1fr); /* 1 column on mobile */
+    }
+}

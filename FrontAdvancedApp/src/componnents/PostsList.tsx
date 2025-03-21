@@ -58,22 +58,42 @@ const PostList: FC<PostListProps> = ({ user, showUserPostsOnly = false }) => {
 
 
 
+  // return (
+  //   <div className="post-list">
+  //     <h2>{showUserPostsOnly ? "My Posts" : "All Posts"}</h2>
+  //     {posts.map((post) => (
+  //       <PostComponent
+  //         key={post._id}
+  //         post={post}
+  //         likePost={like}
+  //         addComment={addComment} 
+  //         userImgUrl={post.ownerImage || "/default-profile.png"}
+  //         userName={post.ownerUsername || "Anonymous"}
+  //         commentCount={post.commentCount || 0}
+  //         deletePost={showUserPostsOnly ? deletePost : undefined}
+  //         allowEdit={allowEdit || showUserPostsOnly}
+  //       />
+  //     ))}
+  //   </div>
+  // );
   return (
     <div className="post-list">
       <h2>{showUserPostsOnly ? "My Posts" : "All Posts"}</h2>
-      {posts.map((post) => (
-        <PostComponent
-          key={post._id}
-          post={post}
-          likePost={like}
-          addComment={addComment} 
-          userImgUrl={post.ownerImage || "/default-profile.png"}
-          userName={post.ownerUsername || "Anonymous"}
-          commentCount={post.commentCount || 0}
-          deletePost={showUserPostsOnly ? deletePost : undefined}
-          allowEdit={allowEdit || showUserPostsOnly}
-        />
-      ))}
+      <div className="post-grid">
+        {posts.map((post) => (
+          <PostComponent
+            key={post._id}
+            post={post}
+            likePost={like}
+            addComment={addComment} 
+            userImgUrl={post.ownerImage || "/default-profile.png"}
+            userName={post.ownerUsername || "Anonymous"}
+            commentCount={post.commentCount || 0}
+            deletePost={showUserPostsOnly ? deletePost : undefined}
+            allowEdit={allowEdit || showUserPostsOnly}
+          />
+        ))}
+      </div>
     </div>
   );
 };

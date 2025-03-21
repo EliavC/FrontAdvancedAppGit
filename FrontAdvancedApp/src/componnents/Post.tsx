@@ -123,26 +123,120 @@ const PostComponent: React.FC<PostItemProps> = ({
   };
 
 
+// return (
+//   <div className="post-card">
+//     <div className="post-header">
+//       <div className="user-info">
+//         {userImgUrl ? <img src={userImgUrl} alt="Profile" className="profile-img" /> : null}
+//         <span className="username">{userName || "Anonymous"}</span>
+//       </div>
+      
+//       {allowEdit && !isEditing && <button onClick={() => setIsEditing(true)}>✏️ Edit</button>}
+//       {deletePost && <button onClick={handleDelete}>🗑️ Delete</button>}
+//     </div>
+
+//     {isEditing ? (
+      
+//       <form onSubmit={handleEdit} className="edit-form">
+//         <label htmlFor={`fileInput-${post._id}`} className="upload-label">
+//           <img
+//             src={imgPreview || "/default-image.png"}
+//             alt="Post"
+//             style={{ width: "100%", cursor: "pointer", borderRadius: 10 }}
+//           />
+//         </label>
+//         <input
+//           type="file"
+//           id={`fileInput-${post._id}`}
+//           accept="image/*"
+//           onChange={(e) => {
+//             if (e.target.files && e.target.files.length > 0) {
+//               const selectedFile = e.target.files[0];
+//               setNewImage(selectedFile);
+//               setImgPreview(URL.createObjectURL(selectedFile));
+//             }
+//           }}
+//           style={{ display: "none" }}
+//         />
+
+//         <textarea
+//           value={newContent}
+//           onChange={(e) => setNewContent(e.target.value)}
+//           style={{ width: "100%", height: 80, marginTop: 10 }}
+//         />
+//         <button type="submit">Save Changes</button>
+//         <button type="button" onClick={() => setIsEditing(false)}>Cancel</button>
+//       </form>
+//     ) : (
+//       <>
+//         {post.imgUrlPost ? <img src={post.imgUrlPost} className="post-image" alt="Post" /> : null}
+//         <p className="caption">
+//           <strong>{userName}</strong> {post.content}
+//         </p>
+//       </>
+//     )}
+
+//     <div className="post-actions">
+//       <button onClick={handleToggleLike} className="action-btn">
+//         {currentUser && post.likes?.includes(currentUser._id) ? "❤️" : "🤍"}
+//       </button>
+//       <span className="count">{post.likes?.length ?? 0}</span>
+//     </div>
+
+//     <div className="action-item">
+//       <button className="action-btn">💬</button>
+//       <span className="count">{commentCount} comments</span>
+//     </div>
+
+//     <div className="add-comment">
+//       <input
+//         type="text"
+//         placeholder="Write a comment..."
+//         value={newComment}
+//         onChange={(e) => setNewComment(e.target.value)}
+//         className="comment-input"
+//       />
+//       <button onClick={() => addComment(post._id ?? "", newComment)} className="comment-btn">
+//         Add
+//       </button>
+//     </div>
+
+//     <button
+//       onClick={() => navigate(`/comments/${post._id}`, { state: { allowDelete: true } })}
+//       className="view-comments-btn"
+//     >
+//       View Comments
+//     </button>
+//   </div>
+// );
+
+
 return (
   <div className="post-card">
     <div className="post-header">
-      <div className="user-info">
-        {userImgUrl ? <img src={userImgUrl} alt="Profile" className="profile-img" /> : null}
-        <span className="username">{userName || "Anonymous"}</span>
-      </div>
-      
-      {allowEdit && !isEditing && <button onClick={() => setIsEditing(true)}>✏️ Edit</button>}
-      {deletePost && <button onClick={handleDelete}>🗑️ Delete</button>}
-    </div>
+  <div className="user-info">
+    <img src={userImgUrl} alt="Profile" className="profile-img" />
+    <span className="username">{userName || "Anonymous"}</span>
+  </div>
+
+  <div className="post-actions">
+    {allowEdit && !isEditing && (
+      <button onClick={() => setIsEditing(true)} className="edit-btn">✏️ Edit</button>
+    )}
+    
+    {deletePost && (
+      <button onClick={handleDelete} className="delete-btn">🗑️ Delete</button>
+    )}
+  </div>
+</div>
 
     {isEditing ? (
-      
       <form onSubmit={handleEdit} className="edit-form">
         <label htmlFor={`fileInput-${post._id}`} className="upload-label">
           <img
             src={imgPreview || "/default-image.png"}
             alt="Post"
-            style={{ width: "100%", cursor: "pointer", borderRadius: 10 }}
+            className="post-image"
           />
         </label>
         <input
@@ -162,30 +256,33 @@ return (
         <textarea
           value={newContent}
           onChange={(e) => setNewContent(e.target.value)}
-          style={{ width: "100%", height: 80, marginTop: 10 }}
+          className="edit-textarea"
         />
-        <button type="submit">Save Changes</button>
-        <button type="button" onClick={() => setIsEditing(false)}>Cancel</button>
+        <div className="edit-buttons">
+          <button type="submit" className="save-button">Save</button>
+          <button type="button" onClick={() => setIsEditing(false)} className="cancel-button">Cancel</button>
+        </div>
       </form>
     ) : (
       <>
-        {post.imgUrlPost ? <img src={post.imgUrlPost} className="post-image" alt="Post" /> : null}
+        {post.imgUrlPost && <img src={post.imgUrlPost} className="post-image" alt="Post" />}
         <p className="caption">
           <strong>{userName}</strong> {post.content}
         </p>
       </>
     )}
 
-    <div className="post-actions">
-      <button onClick={handleToggleLike} className="action-btn">
-        {currentUser && post.likes?.includes(currentUser._id) ? "❤️" : "🤍"}
-      </button>
-      <span className="count">{post.likes?.length ?? 0}</span>
-    </div>
+    <div className="post-footer">
+      <div className="post-actions">
+        <button onClick={handleToggleLike} className={`like-btn ${isLikedByCurrentUser ? "liked" : ""}`}>
+          {isLikedByCurrentUser ? "❤️" : "🤍"}
+        </button>
+        <span className="count">{post.likes?.length ?? 0}</span>
+      </div>
 
-    <div className="action-item">
-      <button className="action-btn">💬</button>
-      <span className="count">{commentCount} comments</span>
+      <div className="post-comments">
+        <button className="comment-btn" onClick={() => navigate(`/comments/${post._id}`)}>💬 {commentCount}</button>
+      </div>
     </div>
 
     <div className="add-comment">
@@ -196,17 +293,8 @@ return (
         onChange={(e) => setNewComment(e.target.value)}
         className="comment-input"
       />
-      <button onClick={() => addComment(post._id ?? "", newComment)} className="comment-btn">
-        Add
-      </button>
+      <button onClick={handleAddComment} className="comment-submit">Post</button>
     </div>
-
-    <button
-      onClick={() => navigate(`/comments/${post._id}`, { state: { allowDelete: true } })}
-      className="view-comments-btn"
-    >
-      View Comments
-    </button>
   </div>
 );
 
