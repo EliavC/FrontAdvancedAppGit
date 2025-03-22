@@ -2,6 +2,7 @@ import { FC, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PostList from "./PostsList";
 import openaiService from "../services/openai-service";
+import "./profileHome.css";
 
 /**
  * By removing `useLocation()` and reading from localStorage,

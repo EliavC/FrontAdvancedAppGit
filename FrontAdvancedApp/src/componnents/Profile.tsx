@@ -8,6 +8,7 @@ import userService, { User } from "../services/user_service";
 import avatar from "../assets/avatar.png";
 import PostList from "./PostsList";
 import CommentsList from "./CommentsList";
+import "./profileHome.css"; 
 
 const Profile: React.FC = () => {
   const location = useLocation();
