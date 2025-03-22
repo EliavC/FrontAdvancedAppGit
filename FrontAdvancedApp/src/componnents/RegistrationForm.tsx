@@ -120,54 +120,76 @@ const RegistrationForm: FC = () => {
         console.log("Google login failure")
     }
 
-
-    return (
-      <div className={`registration-container ${fade ? "registration-fade-in" : "registration-fade-out"}`} 
-           style={{ backgroundImage: `url(${images[currentImage]})` }}>
-          
-          <div className="registration-overlay"></div> {/* Fading effect overlay */}
-
-          <div className="registration-form-container">
-              <h2>Registration Form</h2>
-
-              {errorMessage && <p className="error-text">{errorMessage}</p>}
-
-              {/* Avatar Preview */}
-              <img className="registration-profile-pic"
-                  src={selectedImage ? URL.createObjectURL(selectedImage) : avatar}
-                  alt="Profile Preview"
-              />
-
-              <input ref={(item) => { inputFileRef.current = item; ref(item); }} {...restRegisterParams}
-                  type="file" accept="image/png, image/jpeg" style={{ display: "none" }} />
-
-              {errors.img && <p className="error-text">{errors.img.message}</p>}
-
-              <form onSubmit={handleSubmit(onSubmit)}>
-                  <label>Email:</label>
-                  <input {...register("email")} type="text" className="registration-input" />
-                  {errors.email && <p className="error-text">{errors.email.message}</p>}
-
-                  <label>Username:</label>
-                  <input {...register("username")} type="text" className="registration-input" />
-                  {errors.username && <p className="error-text">{errors.username.message}</p>}
-
-                  <label>Password:</label>
-                  <input {...register("password")} type="password" className="registration-input" />
-                  {errors.password && <p className="error-text">{errors.password.message}</p>}
-
-                  <button type="submit" className="registration-button">Register</button>
-              </form>
-
-              <button className="registration-register-button" onClick={() => navigate("/login")}>Go to Login</button>
-
-              <div className="registration-google-button">
-                <GoogleLogin onSuccess={onGoogleRegisterSuccess} 
-                             onError={onGoogleFailure} />
-            </div>
-          </div>
+  return (
+    <div
+      className={`registration-container ${fade ? "registration-fade-in" : "registration-fade-out"}`}
+      style={{ backgroundImage: `url(${images[currentImage]})` }}
+    >
+      <div className="registration-overlay"></div>
+  
+      <div className="registration-form-container">
+        <h2>Registration Form</h2>
+  
+        {errorMessage && <p className="error-text">{errorMessage}</p>}
+  
+        {/* ✅ FORM starts here */}
+        <form onSubmit={handleSubmit(onSubmit)}>
+  
+          {/* ✅ Avatar preview (clickable, inside form) */}
+          <img
+            className="registration-profile-pic"
+            src={selectedImage ? URL.createObjectURL(selectedImage) : avatar}
+            alt="Profile Preview"
+            onClick={() => inputFileRef.current?.click()}
+            style={{ cursor: "pointer" }}
+          />
+  
+          {/* ✅ Hidden file input (inside form, registered with RHF) */}
+          <input
+            {...restRegisterParams}
+            ref={(element) => {
+              inputFileRef.current = element;
+              ref(element); // This connects to react-hook-form
+            }}
+            type="file"
+            accept="image/png, image/jpeg"
+            style={{ display: "none" }}
+          />
+  
+          {errors.img && <p className="error-text">{errors.img.message}</p>}
+            <br></br>
+          {/* Email */}
+          <label>Email:</label>
+          <input {...register("email")} type="text" className="registration-input" />
+          {errors.email && <p className="error-text">{errors.email.message}</p>}
+  
+          {/* Username */}
+          <label>Username:</label>
+          <input {...register("username")} type="text" className="registration-input" />
+          {errors.username && <p className="error-text">{errors.username.message}</p>}
+  
+          {/* Password */}
+          <label>Password:</label>
+          <input {...register("password")} type="password" className="registration-input" />
+          {errors.password && <p className="error-text">{errors.password.message}</p>}
+  
+          {/* Submit Button */}
+          <button type="submit" className="registration-button">Register</button>
+        </form>
+  
+        {/* Navigation to login */}
+        <button className="registration-register-button" onClick={() => navigate("/login")}>
+          Go to Login
+        </button>
+  
+        {/* Google Login */}
+        <div className="registration-google-button">
+          <GoogleLogin onSuccess={onGoogleRegisterSuccess} onError={onGoogleFailure} />
+        </div>
       </div>
+    </div>
   );
+  
     };
 
 export default RegistrationForm
