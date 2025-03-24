@@ -6,13 +6,11 @@ import CommentComponent from "./Comment";
 
 interface CommentsListProps {
   user: { _id: string }
-  allowDelete?:boolean
 }
 
 const CommentsList: React.FC<CommentsListProps> = ({ user }) => {
   const { postId } = useParams();
-  const location = useLocation();
-  const allowDelete = location.state?.allowDelete ?? false;  // explicitly read state here
+  const location = useLocation(); 
   const { data: comments, isLoading, error, like } = useComments(postId);
 
   const deleteComment = async (id: string) => {
@@ -37,10 +35,10 @@ const CommentsList: React.FC<CommentsListProps> = ({ user }) => {
           userImgUrl={comment.ownerImage || "/default-profile.png"}
           ownerUsername={comment.ownerUsername || "Anonymous"}
           deleteComment={
-            allowDelete && comment.owner === user._id ? deleteComment : undefined
+            comment.owner === user._id ? deleteComment : undefined
           }
           editComment={
-            allowDelete && comment.owner === user._id ? editComment : undefined
+            comment.owner === user._id ? editComment : undefined
           }
         />
       ))}
