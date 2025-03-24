@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Comment } from "../services/comment-service";
-
+import './comment.css'
 interface CommentItemProps {
   comment: Comment;
   likeComment: (id: string) => void;
@@ -58,7 +58,7 @@ const CommentComponent: React.FC<CommentItemProps> = ({
         </div>
       </div>
 
-      <div className="post-actions">
+      <div className="post-actionss">
         <button
           onClick={() => likeComment(comment._id ?? "")}
           className="action-btn"
