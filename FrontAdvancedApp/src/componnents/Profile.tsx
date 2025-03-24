@@ -1,9 +1,9 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { profileSchema, userValidSchema, profileUpdateSchema} from "../services/validationSchema_service";
+import { profileSchema, userValidSchema, profileUpdateSchema, ProfileUpdateData} from "../services/validationSchema_service";
 import { z } from "zod";
 import userService, { User } from "../services/user_service";
 import avatar from "../assets/avatar.png";
@@ -39,7 +39,7 @@ const Profile: React.FC = () => {
       setUser(storedUser);
     }
   }, []);
-  const onSubmit = async (data: userValidSchema) => {
+  const onSubmit = async (data: ProfileUpdateData) => {
     try {
       setErrorMessage(null);
       let imgUrl = user.imgUrl;
@@ -54,8 +54,8 @@ const Profile: React.FC = () => {
       const updatedUser: User = {
         _id: user._id,
         username: data.username,
-        email: data.email,
-        password: data.password,
+        email: data.email||user.email,
+        password: data.password || "",
         imgUrl:imgUrl,
       };
 
@@ -118,12 +118,23 @@ const Profile: React.FC = () => {
         Back to Home
       </button>
 
-      <div style={{ marginTop: "50px" }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          margin: "40px auto 0 auto",
+          maxWidth: "600px",
+          width: "100%"
+        }}
+      >
         {user._id && (
-          <PostList key={user.imgUrl + user.username} 
-          user={{ username: user.username, email: user.email, _id: user._id }} 
-          showUserPostsOnly
-          allowEdit={true} />
+          <PostList
+            key={user.imgUrl + user.username}
+            user={{ username: user.username, email: user.email, _id: user._id }}
+            showUserPostsOnly
+            allowEdit={true}
+          />
         )}
       </div>
     </div>

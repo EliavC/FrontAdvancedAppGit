@@ -4,6 +4,8 @@ html, body {
     height: 100%; /* ensures body can stretch 100% for nested containers */
     font-family: Arial, sans-serif;
   }
+
+  
   
 .post-card {
     background: white;

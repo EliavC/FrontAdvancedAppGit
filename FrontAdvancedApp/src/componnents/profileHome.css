@@ -30,12 +30,13 @@ body, .profile-container, .home-container {
 
 /* Grid for Posts */
 .post-list-container, .post-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-    width: 100%;
-    margin-top: 20px;
-}
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* horizontally center all child items */
+    margin: 20px auto;   /* some vertical margin, and auto left-right */
+    width: 100%;         /* or set a max-width if you want a narrower column */
+    max-width: 600px;    /* optional: to avoid being too wide */
+  }
 
 /* Post Card */
 .post-card {
