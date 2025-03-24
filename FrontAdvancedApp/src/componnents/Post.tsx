@@ -154,11 +154,12 @@ const PostComponent: React.FC<PostItemProps> = ({
         </form>
       ) : (
         <>
+          <p><strong>{post.title}</strong></p>
           {post.imgUrlPost && (
             <img src={post.imgUrlPost} className="post-image" alt="Post" />
           )}
           <p className="caption">
-            <strong>{userName}</strong> {post.content}
+             {post.content}
           </p>
         </>
       )}
