@@ -12,11 +12,12 @@ interface PostListProps {
   showUserPostsOnly?: boolean;
   allowEdit?: boolean;
 }
-
+const POSTS_PER_PAGE = 7;
 const PostList: FC<PostListProps> = ({ user, showUserPostsOnly = false }) => {
   const location = useLocation();
   const { data: posts, isLoading, error, like } = usePosts(showUserPostsOnly ? user._id : undefined);
   const [commentsByPost, setCommentsByPost] = useState<{ [key: string]: Comment[] }>({});
+  const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
   const allowEdit = location.state?.allowEdit??false
   // ✅ Properly implement addComment function
@@ -56,6 +57,10 @@ const PostList: FC<PostListProps> = ({ user, showUserPostsOnly = false }) => {
   if (error) return <p style={{ color: "red" }}>Error: {error}</p>;
   if (!posts.length) return <p>No posts available.</p>;
 
+  const totalPages = Math.ceil(posts.length / POSTS_PER_PAGE);
+  const start = (currentPage - 1) * POSTS_PER_PAGE;
+  const currentPosts = posts.slice(start, start + POSTS_PER_PAGE);
+
 
 
   // return (
@@ -77,22 +82,44 @@ const PostList: FC<PostListProps> = ({ user, showUserPostsOnly = false }) => {
   //   </div>
   // );
   return (
-    <div className="post-list">
+    <div className="post-list vertical">
       <h2>{showUserPostsOnly ? "My Posts" : "All Posts"}</h2>
-      <div className="post-grid">
-        {posts.map((post) => (
-          <PostComponent
-            key={post._id}
-            post={post}
-            likePost={like}
-            addComment={addComment} 
-            userImgUrl={post.ownerImage || "/default-profile.png"}
-            userName={post.ownerUsername || "Anonymous"}
-            commentCount={post.commentCount || 0}
-            deletePost={showUserPostsOnly ? deletePost : undefined}
-            allowEdit={allowEdit || showUserPostsOnly}
-          />
-        ))}
+
+      {currentPosts.map((post) => (
+        <PostComponent
+          key={post._id}
+          post={post}
+          likePost={like}
+          addComment={addComment}
+          userImgUrl={post.ownerImage || "/default-profile.png"}
+          userName={post.ownerUsername || "Anonymous"}
+          commentCount={post.commentCount || 0}
+          deletePost={showUserPostsOnly ? deletePost : undefined}
+          allowEdit={allowEdit || showUserPostsOnly}
+        />
+      ))}
+
+      {/* Paging controls */}
+      <div className="pagination">
+        <button
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+          disabled={currentPage === 1}
+        >
+          ⬅ Previous
+        </button>
+
+        <span>
+          Page {currentPage} of {totalPages}
+        </span>
+
+        <button
+          onClick={() =>
+            setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+          }
+          disabled={currentPage === totalPages}
+        >
+          Next ➡
+        </button>
       </div>
     </div>
   );

@@ -1,5 +1,4 @@
-/* Motorsport Cars Theme for Profile, Edit Profile, and Home Pages */
-
+/* Background Theme */
 body, .profile-container, .home-container {
     background-color: #0e0e0e;
     background-image: url('/assets/image3.jpg');
@@ -11,6 +10,7 @@ body, .profile-container, .home-container {
     text-shadow: 1px 1px 2px #000;
 }
 
+/* Containers */
 .profile-container, .home-container, .registration-form-container {
     backdrop-filter: blur(5px);
     background: rgba(0, 0, 0, 0.6);
@@ -22,25 +22,109 @@ body, .profile-container, .home-container {
     text-align: center;
 }
 
-.profile-container img, .registration-profile-pic {
-    border-radius: 50%;
-    border: 3px solid #ff0000;
-    box-shadow: 0 0 10px #ff0000;
-}
-
-input[type="text"],
-input[type="password"],
-textarea {
+/* Grid for Posts */
+.post-list-container, .post-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
     width: 100%;
-    padding: 10px;
-    margin-top: 10px;
-    border: 2px solid #ff0000;
-    background-color: rgba(255,255,255,0.1);
-    color: #fff;
-    border-radius: 5px;
-    box-shadow: 0 0 5px rgba(255,0,0,0.6);
+    margin-top: 20px;
 }
 
+/* Post Card */
+.post-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 0, 0, 0.5);
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: auto;
+}
+
+.post-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Post Image */
+.post-image {
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-top: 10px;
+    display: block;
+}
+
+/* Post Header */
+.post-header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+}
+
+.profile-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #ff0000;
+}
+
+/* Text Styling */
+.username, .caption strong {
+    color: #ff0000;
+}
+
+.caption {
+    font-size: 14px;
+    color: #fff;
+    margin-top: 10px;
+}
+
+/* Post Footer */
+.post-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+/* Buttons */
+.view-comments-btn, .like-btn, .comment-submit, .edit-btn, .delete-btn {
+    background-color: #ff0000;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.view-comments-btn:hover, .like-btn:hover, .comment-submit:hover, .edit-btn:hover, .delete-btn:hover {
+    background-color: #cc0000;
+}
+
+/* Add Comment */
+.add-comment {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.comment-input {
+    flex: 1;
+    padding: 8px;
+    background: rgba(255,255,255,0.1);
+    color: white;
+    border: 1px solid #ff0000;
+    border-radius: 5px;
+}
+
+/* Other Controls */
 button, .registration-button, .registration-register-button {
     background-color: #ff0000;
     color: #fff;
@@ -53,66 +137,35 @@ button, .registration-button, .registration-register-button {
     transition: transform 0.3s, box-shadow 0.3s;
 }
 
-button:hover, .registration-button:hover, .registration-register-button:hover {
+button:hover {
     transform: scale(1.05);
     box-shadow: 0 0 15px rgba(255,0,0,0.9);
 }
-
-.home-header h1, .profile-container h2 {
-    font-size: 2rem;
+/* Make posts vertical */
+.post-list.vertical .post-card {
     margin-bottom: 20px;
-}
-
-.post-list-container, .post-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-}
-
-.post-card {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    border: 1px solid rgba(255,0,0,0.3);
-    box-shadow: 0 0 10px rgba(255,0,0,0.4);
-    transition: transform 0.3s;
-}
-
-.post-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 0 15px rgba(255,0,0,0.6);
-}
-
-.profile-img {
-    border: 2px solid #ff0000;
-}
-
-.username, .caption strong {
-    color: #ff0000;
-}
-
-.comment-btn, .like-btn, .comment-submit {
+  }
+  
+  /* Paging buttons */
+  .pagination {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .pagination button {
+    padding: 8px 12px;
     background-color: #ff0000;
-    color: #ffffff;
-}
-
-.comment-input {
-    background-color: rgba(255,255,255,0.1);
-    border: 1px solid #ff0000;
-    color: #ffffff;
-}
-
-.error-text {
-    color: #ff6060;
-    font-weight: bold;
-}
-
-.ai-chat-box textarea {
-    border: 2px solid #ff0000;
-    color: #fff;
-    background: rgba(255,255,255,0.1);
-}
-
-.ai-chat-box button {
-    background-color: #ff0000;
-    color: #fff;
-}
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .pagination button[disabled] {
+    background-color: #999;
+    cursor: default;
+  }
+  
