@@ -110,11 +110,6 @@ const CreatePost: React.FC<CreatePostProps> = ({ user }) => {
         <label>Upload an Image</label>
         <input type="file" accept="image/*" onChange={handleFileChange} />
         {/* Optional button to upload the image immediately */}
-        {selectedFile && !uploadedImageUrl && (
-          <button type="button" onClick={handleUploadNow}>
-            Upload Image Now
-          </button>
-        )}
 
         <br />
         <button type="submit">Create Post</button>
