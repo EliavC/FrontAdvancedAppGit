@@ -3,7 +3,8 @@ import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { profileSchema, userValidSchema } from "../services/validationSchema_service";
+import { profileSchema, userValidSchema, profileUpdateSchema} from "../services/validationSchema_service";
+import { z } from "zod";
 import userService, { User } from "../services/user_service";
 import avatar from "../assets/avatar.png";
 import PostList from "./PostsList";
@@ -21,8 +22,8 @@ const Profile: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm<userValidSchema>({
-    resolver: zodResolver(profileSchema),
+  const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm<z.infer<typeof profileUpdateSchema>>({
+    resolver: zodResolver(profileUpdateSchema),
     defaultValues: {
       username: user.username,
       email: user.email,

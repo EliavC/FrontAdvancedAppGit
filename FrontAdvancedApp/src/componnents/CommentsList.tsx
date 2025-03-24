@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import useComments from "../hooks/useComments";
 import CommentService from "../services/comment-service";
 import CommentComponent from "./Comment";
@@ -11,6 +11,7 @@ interface CommentsListProps {
 const CommentsList: React.FC<CommentsListProps> = ({ user }) => {
   const { postId } = useParams();
   const location = useLocation(); 
+  const navigate = useNavigate();
   const { data: comments, isLoading, error, like } = useComments(postId);
 
   const deleteComment = async (id: string) => {
@@ -26,7 +27,13 @@ const CommentsList: React.FC<CommentsListProps> = ({ user }) => {
   if (error) return <p>Error loading comments.</p>;
 
   return (
-    <div>
+    <div style={{ padding: "20px" }}>
+      {/* Add the new buttons here */}
+      <div style={{ marginBottom: "20px" }}>
+        <button onClick={() => navigate("/home")}>Back to Home</button>{" "}
+        <button onClick={() => navigate("/profile")}>Back to Profile</button>
+      </div>
+
       {comments.map((comment) => (
         <CommentComponent
           key={comment._id}
@@ -34,12 +41,8 @@ const CommentsList: React.FC<CommentsListProps> = ({ user }) => {
           likeComment={like}
           userImgUrl={comment.ownerImage || "/default-profile.png"}
           ownerUsername={comment.ownerUsername || "Anonymous"}
-          deleteComment={
-            comment.owner === user._id ? deleteComment : undefined
-          }
-          editComment={
-            comment.owner === user._id ? editComment : undefined
-          }
+          deleteComment={comment.owner === user._id ? deleteComment : undefined}
+          editComment={comment.owner === user._id ? editComment : undefined}
         />
       ))}
     </div>

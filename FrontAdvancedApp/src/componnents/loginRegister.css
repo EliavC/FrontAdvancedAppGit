@@ -5,6 +5,12 @@ html, body {
     height: 100%;
     font-family: Arial, sans-serif;
   }
+
+  #root, /* or #app if you use create-react-app */
+.container, 
+.registration-container {
+  height: 100%; /* or min-height: 100vh; */
+}
   
   /* 2) Shared container styling for both login & registration pages */
   .container, /* for login */
@@ -26,15 +32,11 @@ html, body {
   .overlay,
   .registration-overlay {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.5);
-    z-index: 1;
-    /* Allow clicks to go through to the form */
-    pointer-events: none;
-  }
+  inset: 0; /* top: 0; left: 0; right: 0; bottom: 0; */
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+  pointer-events: none;
+}
   
   /* 4) Fading animations (optional) */
   .fade-in {

@@ -33,6 +33,7 @@ const PostComponent: React.FC<PostItemProps> = ({
   const [newContent, setNewContent] = useState(post.content);
   const [newImage, setNewImage] = useState<File | null>(null);
   const [imgPreview, setImgPreview] = useState(post.imgUrlPost);
+  const [newTitle, setNewTitle] = useState(post.title);
 
   const isLikedByCurrentUser = currentUser
     ? post.likes?.includes(currentUser._id)
@@ -65,6 +66,7 @@ const PostComponent: React.FC<PostItemProps> = ({
 
       const updatedPost = {
         ...post,
+        title:newTitle,
         content: newContent,
         imgUrlPost: updatedImgUrl,
       };
@@ -132,6 +134,13 @@ const PostComponent: React.FC<PostItemProps> = ({
               }
             }}
             style={{ display: "none" }}
+          />
+          <label>Title</label>
+          <input
+            type="text"
+            value={newTitle}
+            onChange={(e) => setNewTitle(e.target.value)}
+            className="edit-textarea"
           />
 
           <textarea
