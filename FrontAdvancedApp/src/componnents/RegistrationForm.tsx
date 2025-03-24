@@ -13,6 +13,7 @@ import image2 from "../assets/image2.png";
 import image3 from "../assets/image3.jpg";
 import image4 from "../assets/image4.webp";
 import image5 from "../assets/image5.webp";
+import "./loginRegister.css";
 
 const images = [image1, image2, image3, image4, image5];
 
@@ -29,7 +30,7 @@ const RegistrationForm: FC = () => {
           setTimeout(() => {
               setCurrentImage((prevImage) => (prevImage + 1) % images.length);
               setFade(true); // Fade in new image
-          }, 500); // Wait for fade-out before changing image
+          }, 400); // Wait for fade-out before changing image
       }, 5000); // Change every 5 seconds
 
       return () => clearInterval(interval); // Cleanup interval
@@ -122,7 +123,7 @@ const RegistrationForm: FC = () => {
 
   return (
     <div
-      className={`registration-container ${fade ? "registration-fade-in" : "registration-fade-out"}`}
+      className={`registration-container ${fade ? "fade-in" : "fade-out"}`}
       style={{ backgroundImage: `url(${images[currentImage]})` }}
     >
       <div className="registration-overlay"></div>

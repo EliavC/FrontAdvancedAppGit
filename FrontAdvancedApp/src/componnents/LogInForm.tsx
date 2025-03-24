@@ -1,4 +1,4 @@
-import "./styles.css"
+//import "./styles.css"
 import { useForm } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,6 +11,8 @@ import image2 from "../assets/image2.png";
 import image3 from "../assets/image3.jpg";
 import image4 from "../assets/image4.webp";
 import image5 from "../assets/image5.webp";
+import "./loginRegister.css";
+
 
 // Store images in an array
 const images = [image1, image2, image3, image4, image5];
@@ -40,7 +42,7 @@ const LogInForm: React.FC<{ setUser: (user: any) => void }> = ({ setUser }) => {
       setTimeout(() => {
         setCurrentImage((prevImage) => (prevImage + 1) % images.length);
         setFade(true); // Fade in new image
-      }, 500); // Wait for fade-out before changing image
+      }, 400); // Wait for fade-out before changing image
     }, 5000); // Change every 5 seconds
 
     return () => clearInterval(interval); // Cleanup interval
@@ -155,15 +157,19 @@ const LogInForm: React.FC<{ setUser: (user: any) => void }> = ({ setUser }) => {
   };
 
   return (
-    <div className={`container ${fade ? "fade-in" : "fade-out"}`} style={{ backgroundImage: `url(${images[currentImage]})` }}>
-      <div className="overlay"></div> 
+    <div
+      className={`container ${fade ? "fade-in" : "fade-out"}`}
+      style={{ backgroundImage: `url(${images[currentImage]})` }}
+    >
+      {/* Dark overlay */}
+      <div className="overlay"></div>
 
+      {/* Left side (optional welcome text) */}
       <div className="left-side">
-        <h1>
-          SIGN IN TO YOUR <span>ADVENTURE!</span>
-        </h1>
+        <h1>Sign In To Your <span>Adventure!</span></h1>
       </div>
 
+      {/* Right side (the actual login form) */}
       <div className="right-side">
         <div className="signin-container">
           <h2>SIGN IN</h2>
@@ -172,22 +178,37 @@ const LogInForm: React.FC<{ setUser: (user: any) => void }> = ({ setUser }) => {
           {errorMessage && <p className="error-text">{errorMessage}</p>}
 
           <form className="form" onSubmit={handleSubmit(onSubmit)}>
-            <input {...register("username")} type="text" placeholder="Username" className="input" />
+            <input
+              {...register("username")}
+              type="text"
+              placeholder="Username"
+              className="input"
+            />
             {errors.username && <p className="error-text">{errors.username.message}</p>}
 
-            <input {...register("password")} type="password" placeholder="Password" className="input" />
+            <input
+              {...register("password")}
+              type="password"
+              placeholder="Password"
+              className="input"
+            />
             {errors.password && <p className="error-text">{errors.password.message}</p>}
 
             <button type="submit" className="button">Sign In</button>
           </form>
 
           <p className="register-text">Don't have an account?</p>
-          <button className="register-button" onClick={() => navigate("/register")}>Go to Register</button>
+          <button
+            className="register-button"
+            onClick={() => navigate("/register")}
+          >
+            Go to Register
+          </button>
 
           <p className="divider">Or continue with</p>
 
           <div className="google-button">
-            <GoogleLogin onSuccess={loginSuccess} onError={() => console.log("Google login failure")} />
+            <GoogleLogin onSuccess={loginSuccess} onError={loginFailed} />
           </div>
         </div>
       </div>

@@ -127,7 +127,7 @@ const Profile: React.FC = () => {
       </div>
     </div>
   );
-  {user._id && <CommentsList user={{ _id: user._id || "" }} allowDelete={true} />}
+  {user._id && <CommentsList user={{ _id: user._id || "" }} />}
 };
 
 export default Profile;
