@@ -1,0 +1,137 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+
+.container {
+  display: flex;
+  min-height: 100vh;
+  min-width: 100vw;
+  width: 100%;
+  height: 100%;
+  background-size: contain; /* Ensures the full image is visible */
+  background-position: left center; /* Aligns it to the left */
+  background-repeat: no-repeat;
+  background-color: #0d0b1d; /* Fallback color */
+  position: relative;
+  color: white;
+  overflow: hidden;
+  transition: background-image 1s ease-in-out;
+}
+.fade-in {
+  opacity: 1;
+  transition: opacity 1s ease-in-out;
+}
+
+.fade-out {
+  opacity: 0.5;
+  transition: opacity 1s ease-in-out;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 50%;
+  height: 100%;
+}
+.left-side {
+  flex: 1;
+  display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  position: relative;
+    z-index: 2;
+}
+@keyframes fadeInBg {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
+}
+@keyframes fadeOutBg {
+  0%   { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.right-side {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 3;
+}
+
+.signin-container {
+  width: 100%;
+  max-width: 350px;
+  padding: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.2);
+  text-align: center;
+  backdrop-filter: blur(10px); 
+}
+
+.input {
+  padding: 12px;
+  width: 100%;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+  background: #2c2b49;
+  color: white;
+  font-size: 1rem;
+}
+
+.button, .google-button, .register-button {
+  width: 100%; /* Make all buttons the same width */
+  max-width: 300px; /* Keep them aligned with the input fields */
+  padding: 12px;
+  border-radius: 5px;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+/* Sign In Button */
+.button {
+  background: linear-gradient(45deg, #6a5acd, #836fff);
+  color: white;
+}
+
+/* Google Button */
+.google-button {
+  width: 100%;
+  max-width: 300px; /* Same as other buttons */
+  height: 50px; /* Adjust to match other buttons */
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Centers the Google button */
+  border-radius: 5px;
+  background: white;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.google-button > div {
+  width: 100% !important;
+  display: flex;
+  justify-content: center; /* Ensures Google login stays centered */
+}
+
+/* Register Button */
+.register-button {
+  background: #ff7b7b;
+  color: white;
+  text-align: center;
+}
+
+
+

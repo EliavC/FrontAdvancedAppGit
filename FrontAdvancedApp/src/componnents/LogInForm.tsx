@@ -6,11 +6,11 @@ import { useNavigate } from "react-router-dom";
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import userService from "../services/user_service";
 import image1 from "../assets/image1.jpg";
-import image2 from "../assets/image2.png";
+import image2 from "../assets/image2.jpg";
 import image3 from "../assets/image3.jpg";
 import image4 from "../assets/image4.webp";
 import image5 from "../assets/image5.webp";
-import "./loginRegister.css";
+import "./Login.css";
 
 
 // Store images in an array
@@ -119,57 +119,22 @@ const LogInForm: React.FC<{ setUser: (user: any) => void }> = ({ setUser }) => {
         setErrorMessage("Google login error. Please try again.");
     }
 };
-  // const loginSuccess = async (credentialResponse: CredentialResponse) => {
-  //   try {
-  //     const data = await userService.registerWithGoogle(credentialResponse);
-  //     console.log("data    ",data)
-  //     if (data.accessToken) {
-  //       localStorage.setItem("token", data.accessToken);
-  //       localStorage.setItem("refreshToken", data.refreshToken);
-
-  //       if (!data.username) {
-  //         setErrorMessage("No username from Google response.");
-  //         return;
-  //       }
-
-  //       const existingUserArr = await userService.getUserByUsername(data.username);
-  //       const actualUser = existingUserArr?.length > 0 ? existingUserArr[0] : null;
-
-  //       if (!actualUser) {
-  //         setErrorMessage("No user found for that username. (Google new user)");
-  //         return;
-  //       }
-
-  //       localStorage.setItem("user", JSON.stringify(actualUser));
-  //       setUser(actualUser);
-  //       navigate("/home",{state:actualUser});
-  //     } else {
-  //       setErrorMessage("Google sign-in failed or user already exists but we can't log you in.");
-  //     }
-  //   } catch (err) {
-  //     setErrorMessage("Google login error");
-  //   }
-  // };
+  
 
   const loginFailed = () => {
     console.log("Google login failure");
   };
 
+
   return (
-    <div
-      className={`container ${fade ? "fade-in" : "fade-out"}`}
-      style={{ backgroundImage: `url(${images[currentImage]})` }}
-    >
-      {/* Dark overlay */}
-      <div className="overlay"></div>
-
-      {/* Left side (optional welcome text) */}
+<div className={`container ${fade ? "fade-in" : "fade-out"}`} style={{ backgroundImage: `url(${images[currentImage]})` }}>
+<div className="overlay"></div> 
       <div className="left-side">
-        <h1>Sign In To Your <span>Adventure!</span></h1>
-      </div>
-
-      {/* Right side (the actual login form) */}
-      <div className="right-side">
+        <h1>
+          SIGN IN TO YOUR <span>ADVENTURE!</span>
+        </h1>
+  </div>
+  <div className="right-side">
         <div className="signin-container">
           <h2>SIGN IN</h2>
           <p>Sign in with email address</p>
@@ -177,38 +142,25 @@ const LogInForm: React.FC<{ setUser: (user: any) => void }> = ({ setUser }) => {
           {errorMessage && <p className="error-text">{errorMessage}</p>}
 
           <form className="form" onSubmit={handleSubmit(onSubmit)}>
-            <input
-              {...register("username")}
-              type="text"
-              placeholder="Username"
-              className="input"
-            />
-            {errors.username && <p className="error-text">{errors.username.message}</p>}
+                <input {...register("username")} type="text" placeholder="Username" className="input" />
+                {errors.username && <p className="error-text">{errors.username.message}</p>}
 
-            <input
-              {...register("password")}
-              type="password"
-              placeholder="Password"
-              className="input"
-            />
-            {errors.password && <p className="error-text">{errors.password.message}</p>}
+                <input {...register("password")} type="password" placeholder="Password" className="input" />
+                {errors.password && <p className="error-text">{errors.password.message}</p>}
 
-            <button type="submit" className="button">Sign In</button>
-          </form>
+                
 
-          <p className="register-text">Don't have an account?</p>
-          <button
-            className="register-button"
-            onClick={() => navigate("/register")}
-          >
-            Go to Register
-          </button>
+                <button type="submit" className="button">Sign In</button>
+              </form>
 
-          <p className="divider">Or continue with</p>
+              <p className="divider">Or continue with</p>
+              <div className="google-button">
+                <GoogleLogin onSuccess={loginSuccess} onError={loginFailed} />
+              </div>
 
-          <div className="google-button">
-            <GoogleLogin onSuccess={loginSuccess} onError={loginFailed} />
-          </div>
+              <p className="register-text">Don't have an account?</p>
+              <button className="register-button" onClick={() => navigate("/register")}>Go to Register</button>
+
         </div>
       </div>
     </div>

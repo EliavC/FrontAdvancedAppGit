@@ -9,11 +9,11 @@ import { CredentialResponse, GoogleLogin } from '@react-oauth/google'
 import { zodResolver } from "@hookform/resolvers/zod"; 
 import {userValidSchema, profileSchema} from "../services/validationSchema_service"
 import image1 from "../assets/image1.jpg";
-import image2 from "../assets/image2.png";
+import image2 from "../assets/image2.jpg";
 import image3 from "../assets/image3.jpg";
 import image4 from "../assets/image4.webp";
 import image5 from "../assets/image5.webp";
-import "./loginRegister.css";
+import './Register.css'
 
 const images = [image1, image2, image3, image4, image5];
 
@@ -122,19 +122,17 @@ const RegistrationForm: FC = () => {
     }
 
   return (
-    <div
-      className={`registration-container ${fade ? "fade-in" : "fade-out"}`}
-      style={{ backgroundImage: `url(${images[currentImage]})` }}
-    >
-      <div className="registration-overlay"></div>
-  
-      <div className="registration-form-container">
-        <h2>Registration Form</h2>
-  
-        {errorMessage && <p className="error-text">{errorMessage}</p>}
-  
-        {/* ✅ FORM starts here */}
-        <form onSubmit={handleSubmit(onSubmit)}>
+    <div className={`registration-container ${fade ? "registration-fade-in" : "registration-fade-out"}`} 
+         style={{ backgroundImage: `url(${images[currentImage]})` }}>
+        
+        <div className="registration-overlay"></div> {/* Fading effect overlay */}
+
+        <div className="registration-form-container">
+            <h2>Registration Form</h2>
+
+            {errorMessage && <p className="error-text">{errorMessage}</p>}
+
+            <form onSubmit={handleSubmit(onSubmit)}>
   
           {/* ✅ Avatar preview (clickable, inside form) */}
           <img
@@ -177,18 +175,15 @@ const RegistrationForm: FC = () => {
           {/* Submit Button */}
           <button type="submit" className="registration-button">Register</button>
         </form>
-  
-        {/* Navigation to login */}
-        <button className="registration-register-button" onClick={() => navigate("/login")}>
-          Go to Login
-        </button>
-  
-        {/* Google Login */}
-        <div className="registration-google-button">
-          <GoogleLogin onSuccess={onGoogleRegisterSuccess} onError={onGoogleFailure} />
+
+            <button className="registration-register-button" onClick={() => navigate("/login")}>Go to Login</button>
+
+            <div className="registration-google-button">
+              <GoogleLogin onSuccess={onGoogleRegisterSuccess} 
+                           onError={onGoogleFailure} />
+          </div>
         </div>
-      </div>
-    </div>
+        </div>
   );
   
     };
