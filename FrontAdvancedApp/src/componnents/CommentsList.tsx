@@ -14,14 +14,13 @@ const CommentsList: React.FC<CommentsListProps> = () => {
   const { data: comments, isLoading, error, like } = useComments(postId);
   const storedUserStr = localStorage.getItem("user");
   const user = storedUserStr ? JSON.parse(storedUserStr) : null;
-  
   const deleteComment = async (id: string) => {
     await CommentService.delete(id);
     navigate("/profile",{state:user})
   };
   const editComment = async (id: string, updatedText: string) => {
     await CommentService.update(id, { comment: updatedText });
-    navigate("/profile",{state:user}) // Refresh the comment list after editing
+    navigate("/profile",{state:user}) 
   };
 
   if (isLoading) return <div className="spinner"></div>;

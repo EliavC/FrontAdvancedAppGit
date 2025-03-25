@@ -53,7 +53,7 @@ const PostList: FC<PostListProps> = ({ user, showUserPostsOnly = false }) => {
     }
   };
 
-  if (isLoading) return <div className="spinner"></div>
+  if (isLoading ) return <div className="spinner"></div>
   if (error) return <p style={{ color: "red" }}>Error: {error}</p>;
   if (!isLoading && posts.length === 0) return <p>No posts available.</p>;
 

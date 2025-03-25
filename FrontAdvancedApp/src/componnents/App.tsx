@@ -8,7 +8,7 @@ import PostsList from "./PostsList";
 import CreatePost from "./CreatePost";
 import userService from "../services/user_service";
 import CommentsList from "./CommentsList";
-
+import './Spinners.css'
 const App = () => {
     const [user, setUser] = useState<any>(null);
     const [loading, setLoading] = useState(true);
@@ -43,7 +43,7 @@ const App = () => {
         autoLogin();
     }, []);
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) return <div className="spinner"></div>;
 
     return (
         <Router>
