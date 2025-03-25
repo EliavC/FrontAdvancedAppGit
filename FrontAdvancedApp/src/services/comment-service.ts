@@ -1,4 +1,4 @@
-import apiClient, { CanceledError } from "./api-client"
+import  { CanceledError } from "./api-client"
 import BaseService from "./base-service"
 
 

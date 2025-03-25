@@ -1,4 +1,4 @@
-import React, { useState, FC } from "react";
+import { useState, FC } from "react";
 import usePosts from "../hooks/usePosts";
 import PostComponent from "./Post";
 import "./styles.css";
@@ -16,7 +16,7 @@ const POSTS_PER_PAGE = 7;
 const PostList: FC<PostListProps> = ({ user, showUserPostsOnly = false }) => {
   const location = useLocation();
   const { data: posts, isLoading, error, like } = usePosts(showUserPostsOnly ? user._id : undefined);
-  const [commentsByPost, setCommentsByPost] = useState<{ [key: string]: Comment[] }>({});
+  //const [commentsByPost, setCommentsByPost] = useState<{ [key: string]: Comment[] }>({});
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
   const allowEdit = location.state?.allowEdit??false
@@ -53,9 +53,9 @@ const PostList: FC<PostListProps> = ({ user, showUserPostsOnly = false }) => {
     }
   };
 
-  if (isLoading) return <p>Loading posts...</p>;
+  if (isLoading) return <div className="spinner"></div>
   if (error) return <p style={{ color: "red" }}>Error: {error}</p>;
-  if (!posts.length) return <p>No posts available.</p>;
+  if (!isLoading && posts.length === 0) return <p>No posts available.</p>;
 
   const totalPages = Math.ceil(posts.length / POSTS_PER_PAGE);
   const start = (currentPage - 1) * POSTS_PER_PAGE;

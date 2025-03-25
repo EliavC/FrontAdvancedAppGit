@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from 'react'
 import avatar from '../assets/avatar.png'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faImage } from '@fortawesome/free-solid-svg-icons'
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+// import { faImage } from '@fortawesome/free-solid-svg-icons'
 import { useForm } from 'react-hook-form'
 import userService, { User } from '../services/user_service'
 import { useNavigate } from "react-router-dom"

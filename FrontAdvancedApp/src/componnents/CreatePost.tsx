@@ -22,7 +22,7 @@ const CreatePost: React.FC<CreatePostProps> = ({ user }) => {
   // For storing the actual File object
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   // The URL we get back after uploading the file
-  const [uploadedImageUrl, setUploadedImageUrl] = useState("");
+  const [uploadedImageUrl] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,18 +74,18 @@ const CreatePost: React.FC<CreatePostProps> = ({ user }) => {
 
   // If you want to upload the image as soon as user picks the file, you can do so.
   // But here, we do it on submission. Alternatively:
-  const handleUploadNow = async () => {
-    if (!selectedFile) return;
-    try {
-      const uploadResponse = await user_service.uploadImage(selectedFile);
-      const url = (await uploadResponse.request).data.url;
-      setUploadedImageUrl(url);
-      alert("Image uploaded!");
-    } catch (err) {
-      console.error(err);
-      alert("Image upload failed");
-    }
-  };
+  // const handleUploadNow = async () => {
+  //   if (!selectedFile) return;
+  //   try {
+  //     const uploadResponse = await user_service.uploadImage(selectedFile);
+  //     const url = (await uploadResponse.request).data.url;
+  //     setUploadedImageUrl(url);
+  //     alert("Image uploaded!");
+  //   } catch (err) {
+  //     console.error(err);
+  //     alert("Image upload failed");
+  //   }
+  // };
 
   return (
     <div className="create-post-container" style={{ maxWidth: "500px", margin: "0 auto" }}>

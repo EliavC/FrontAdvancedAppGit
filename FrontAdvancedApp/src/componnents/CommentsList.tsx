@@ -1,29 +1,30 @@
 import React from "react";
-import { useParams, useLocation, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import useComments from "../hooks/useComments";
 import CommentService from "../services/comment-service";
 import CommentComponent from "./Comment";
-
+import "./comment.css"
 interface CommentsListProps {
   user: { _id: string }
 }
 
-const CommentsList: React.FC<CommentsListProps> = ({ user }) => {
+const CommentsList: React.FC<CommentsListProps> = () => {
   const { postId } = useParams();
-  const location = useLocation(); 
   const navigate = useNavigate();
   const { data: comments, isLoading, error, like } = useComments(postId);
-
+  const storedUserStr = localStorage.getItem("user");
+  const user = storedUserStr ? JSON.parse(storedUserStr) : null;
+  
   const deleteComment = async (id: string) => {
     await CommentService.delete(id);
-    window.location.reload();
+    navigate("/profile",{state:user})
   };
   const editComment = async (id: string, updatedText: string) => {
     await CommentService.update(id, { comment: updatedText });
-    window.location.reload(); // Refresh the comment list after editing
+    navigate("/profile",{state:user}) // Refresh the comment list after editing
   };
 
-  if (isLoading) return <p>Loading comments...</p>;
+  if (isLoading) return <div className="spinner"></div>;
   if (error) return <p>Error loading comments.</p>;
 
   return (

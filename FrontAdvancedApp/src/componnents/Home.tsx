@@ -18,6 +18,7 @@ const Home: FC = () => {
   const user = userStr ? JSON.parse(userStr) : null;
 
   useEffect(() => {
+    console.log(user)
     const token = localStorage.getItem("token");
     // If no token or no user ID => not logged in
     if (!token || !user?._id) {
